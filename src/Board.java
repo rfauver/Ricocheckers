@@ -6,7 +6,7 @@ public class Board
 	
 	public Board(IntVector2 dimensions)
 	{
-		String[] walls = FileLoader.readFile("walls.txt", dimensions.x * dimensions.y);
+		String[] walls = FileLoader.readFile("walls.txt", dimensions.x * dimensions.z);
 		this.dimensions = dimensions;
 		for (int i = 0; i < dimensions.x; i++)
 		{
@@ -17,8 +17,8 @@ public class Board
 		}
 	}
 	
-	public BoardCell adjacent(BoardCell cell, Direction d)
+	public BoardCell getCell(IntVector2 coords)
 	{
-		return null;
+		return cells[coords.x][coords.z];
 	}
 }

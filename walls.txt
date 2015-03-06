@@ -1,0 +1,121 @@
+NW; row 1
+N;
+N;
+N;
+NE;
+NW;
+N;
+N;
+N;
+N;
+NE;
+W; row 2
+S;
+;
+;
+;
+;
+;
+;
+;
+;
+E;
+W; row 3
+N;
+;
+S;
+;
+;
+E;
+W;
+;
+;
+E;
+WE; row 4
+W;
+;
+N;
+;
+;
+;
+;
+;
+;
+ES;
+W; row 5
+;
+;
+;
+;
+S;
+S;
+E;
+W;
+;
+NE;
+W; row 6
+;
+;
+;
+ES;
+NESW;
+NW;
+;
+;
+;
+E;
+SW; row 7
+;
+E;
+W;
+N;
+N;
+;
+;
+;
+;
+E;
+NW; row 8
+;
+;
+;
+;
+;
+;
+S;
+;
+E;
+EW;
+W; row 9
+;
+;
+E;
+W;
+;
+;
+N;
+;
+S;
+E;
+W; row 10
+;
+;
+;
+;
+;
+;
+;
+;
+N;
+E;
+SW; row 11
+S;
+S;
+S;
+S;
+ES;
+SW;
+S;
+S;
+S;
+SE;

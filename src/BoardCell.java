@@ -39,12 +39,29 @@ public class BoardCell
 		{
 			if (wall[i]) //is wall
 			{
-				edges[i] = new BoardWall(this, b.adjacent(this, Direction.toDirection(i)), Direction.toDirection(i));
+				edges[i] = new BoardWall(this, adjacent(Direction.toDirection(i)), Direction.toDirection(i));
 			}
 			else //is passage
 			{
-				edges[i] = new BoardPassage(this, b.adjacent(this, Direction.toDirection(i)), Direction.toDirection(i));
+				edges[i] = new BoardPassage(this, adjacent(Direction.toDirection(i)), Direction.toDirection(i));
 			}
 		}	
+	}
+	
+	public BoardCell adjacent(Direction dir)
+	{
+		switch (dir)
+		{
+		case NORTH:
+			return board.getCell(new IntVector2(coords.x, coords.z + 1));
+		case EAST:
+			return board.getCell(new IntVector2(coords.x + 1, coords.z));
+		case SOUTH: 
+			return board.getCell(new IntVector2(coords.x, coords.z - 1));
+		case WEST:
+			return board.getCell(new IntVector2(coords.x - 1, coords.z));
+		default:
+			return null;
+		} 
 	}
 }

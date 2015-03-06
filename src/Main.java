@@ -6,8 +6,8 @@ public class Main
 	{
 		TicTacToe ttt = new TicTacToe();
 		ttt.emptyBoard();
-		Player p1 = new MinimaxPlayer(1);
-		Player p2 = new MinimaxPlayer(2);
+		Player p1 = new AlphaBetaPlayer(1);
+		Player p2 = new RandomPlayer(2);
 		
 		while(!ttt.gameOver)
 		{
