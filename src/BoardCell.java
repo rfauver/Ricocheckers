@@ -9,6 +9,7 @@ public class BoardCell
 	public BoardCell(IntVector2 coordinates, String walls, Board b)
 	{
 		coords = coordinates;
+		board = b;
 
 		boolean[] wall = new boolean[4];
 
