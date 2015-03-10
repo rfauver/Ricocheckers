@@ -77,7 +77,7 @@ public class TicTacToe implements Game {
 				}
 			}
 		}	
-		if (getPossibleMoves()[0] == null)
+		if (getPossibleMoves(0)[0] == null)
 		{
 			winner = 0;
 			gameOver = true;

@@ -6,6 +6,7 @@ public class Board
 	private GamePiece[] pieces;
 	private final IntVector2 dimensions;
 	private final int pieceCount;
+	private final IntVector2[] startingPositions;
 	
 	public Board(IntVector2 dimensions, int pieceCount)
 	{
@@ -14,6 +15,7 @@ public class Board
 		
 		cells = new BoardCell[dimensions.x][dimensions.z];
 		pieces = new GamePiece[pieceCount];
+		startingPositions = new IntVector2[pieceCount];
 		
 		createCells();
 		
@@ -67,6 +69,7 @@ public class Board
 			tempPlayer = Integer.parseInt(temp);
 			IntVector2 coords = new IntVector2(tempX, tempZ);
 			pieces[i] = new GamePiece(coords, tempPlayer, this);
+			startingPositions[i] = coords;
 			getCell(coords).piece = pieces[i];
 		}
 	}
@@ -98,5 +101,20 @@ public class Board
 		}
 		
 		return playerPieces.toArray(new GamePiece[playerPieces.size()]);
+	}
+	
+	public IntVector2[] getPlayerStartingPositions(int playerNumber)
+	{
+		ArrayList<IntVector2> playerStartingPositions = new ArrayList<IntVector2>();
+		
+		for (int i = 0; i < startingPositions.length; i++)
+		{
+			if (pieces[i].playerNumber == playerNumber)
+			{
+				playerStartingPositions.add(startingPositions[i]);
+			}
+		}
+		
+		return playerStartingPositions.toArray(new IntVector2[playerStartingPositions.size()]);
 	}
 }

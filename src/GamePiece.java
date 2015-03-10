@@ -6,6 +6,7 @@ public class GamePiece
 	
 	private Board board;
 	private BoardCell currentCell;
+	private final BoardCell startingCell;
 	
 	public GamePiece(IntVector2 coordinates, int playerNumber, Board b)
 	{
@@ -14,10 +15,21 @@ public class GamePiece
 		board = b;
 		
 		currentCell = b.getCell(coordinates);
+		startingCell = currentCell;
 	}
 	
 	public BoardCell getCurrentCell()
 	{
 		return currentCell;
+	}
+	
+	public void setCurrentCell(BoardCell cell)
+	{
+		currentCell = cell;
+	}
+	
+	public BoardCell getStartingCell()
+	{
+		return startingCell;
 	}
 }
