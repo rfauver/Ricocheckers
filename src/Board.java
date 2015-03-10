@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Board 
 {
@@ -64,7 +65,9 @@ public class Board
 				}
 			}
 			tempPlayer = Integer.parseInt(temp);
-			pieces[i] = new GamePiece(new IntVector2(tempX, tempZ), tempPlayer, this);
+			IntVector2 coords = new IntVector2(tempX, tempZ);
+			pieces[i] = new GamePiece(coords, tempPlayer, this);
+			getCell(coords).piece = pieces[i];
 		}
 	}
 	
@@ -80,5 +83,20 @@ public class Board
 	public GamePiece[] getPieces()
 	{
 		return pieces;
+	}
+	
+	public GamePiece[] getPlayerPieces(int playerNumber)
+	{
+		ArrayList<GamePiece> playerPieces = new ArrayList<GamePiece>();
+		
+		for (int i = 0; i < pieces.length; i++)
+		{
+			if (pieces[i].playerNumber == playerNumber)
+			{
+				playerPieces.add(pieces[i]);
+			}
+		}
+		
+		return playerPieces.toArray(new GamePiece[playerPieces.size()]);
 	}
 }

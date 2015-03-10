@@ -1,11 +1,12 @@
 
 public class Move 
 {
-	public int x,y;
+	public IntVector2 destination;
+	public GamePiece piece;
 	
-	public Move(int x, int y)
+	public Move(IntVector2 destination, GamePiece piece)
 	{
-		this.x = x;
-		this.y = y;
+		this.destination = destination;
+		this.piece = piece;
 	}
 }

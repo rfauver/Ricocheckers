@@ -1,4 +1,4 @@
-import java.util.Stack;
+import java.util.*;
 
 public class AIGame implements Game 
 {
@@ -26,8 +26,29 @@ public class AIGame implements Game
 		return 0;
 	}
 
-	public Move[] getPossibleMoves() 
+	public Move[] getPossibleMoves(int player) 
 	{
+		GamePiece[] pieces = board.getPlayerPieces(player);
+		ArrayList<Move> moves = new ArrayList<Move>();
+		
+		for (int i = 0; i < pieces.length; i++)
+		{
+			BoardCellEdge[] edges = pieces[i].getCurrentCell().getEdges();
+			for (int j = 0; j < edges.length; j++)
+			{
+				BoardCell currentCell = edges[j].cell;
+				if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
+				else
+				{
+					while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
+					{
+						currentCell = currentCell.getEdges()[j].adjCell;
+					}
+					moves.add(new Move(currentCell.coords, pieces[i]));
+				}
+			}
+		}
+		
 		return null;
 	}
 

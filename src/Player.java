@@ -12,7 +12,7 @@ public class Player
 	
 	public void makeMove(Game g)
 	{
-		Move m = g.getPossibleMoves()[0];
+		Move m = g.getPossibleMoves(playerNumber)[0];
 		g.makeMove(m, playerNumber);
 	}
 }

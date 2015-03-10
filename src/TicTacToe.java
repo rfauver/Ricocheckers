@@ -93,7 +93,7 @@ public class TicTacToe implements Game {
 		else return -1.0;
 	}
 
-	public Move[] getPossibleMoves() 
+	public Move[] getPossibleMoves(int player) 
 	{
 		Move[] moves = new Move[board.length*board[0].length];
 		int count = 0;
@@ -103,7 +103,7 @@ public class TicTacToe implements Game {
 			{
 				if (board[i][j] == 0)
 				{
-					moves[count] = new Move(i, j);
+					moves[count] = new Move(new IntVector2(i, j), null);
 					count++;
 				}
 			}
@@ -113,7 +113,7 @@ public class TicTacToe implements Game {
 
 	public void makeMove(Move m, int p) 
 	{
-		board[m.x][m.y] = p;
+		board[m.destination.x][m.destination.z] = p;
 		moveStack.push(m);
 	}
 
@@ -123,7 +123,7 @@ public class TicTacToe implements Game {
 		if (gameOver) gameOver = false;
 		winner = 0;
 		Move m = moveStack.pop();
-		board[m.x][m.y] = 0;
+		board[m.destination.x][m.destination.z] = 0;
 	}
 	
 	public void emptyBoard()

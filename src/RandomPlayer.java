@@ -12,9 +12,9 @@ public class RandomPlayer extends Player
 	public void makeMove(Game g)
 	{
 		int i = 0;
-		for (; i < g.getPossibleMoves().length; i++)
+		for (; i < g.getPossibleMoves(playerNumber).length; i++)
 		{
-			if (g.getPossibleMoves()[i] == null)
+			if (g.getPossibleMoves(playerNumber)[i] == null)
 			{
 				i--;
 				break;
@@ -24,7 +24,7 @@ public class RandomPlayer extends Player
 		int moveIndex;
 		if (i == 0) moveIndex = i;
 		else moveIndex = r.nextInt(i);
-		Move m = g.getPossibleMoves()[moveIndex];
+		Move m = g.getPossibleMoves(playerNumber)[moveIndex];
 		g.makeMove(m, playerNumber);
 	}
 }

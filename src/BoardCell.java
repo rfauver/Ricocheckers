@@ -2,6 +2,7 @@
 public class BoardCell 
 {
 	public IntVector2 coords;
+	public GamePiece piece;
 
 	private Board board;
 	private BoardCellEdge[] edges = new BoardCellEdge[Direction.values().length];
@@ -10,6 +11,7 @@ public class BoardCell
 	{
 		coords = coordinates;
 		board = b;
+		piece = null;
 
 		boolean[] wall = new boolean[4];
 
@@ -64,5 +66,10 @@ public class BoardCell
 		default:
 			return null;
 		} 
+	}
+	
+	public BoardCellEdge[] getEdges()
+	{
+		return edges;
 	}
 }

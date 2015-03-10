@@ -12,7 +12,7 @@ public class AlphaBetaPlayer extends Player
 	{
 		double max = Double.NEGATIVE_INFINITY;
 		int moveIndex = 0;
-		Move[] moves = g.getPossibleMoves();
+		Move[] moves = g.getPossibleMoves(playerNumber);
 		for (int i = 0; i < moves.length; i++)
 		{
 			if (moves[i] == null) break;
@@ -32,7 +32,7 @@ public class AlphaBetaPlayer extends Player
 	{
 		if (g.isGameOver()) return g.gameValue(playerNumber);
 		double val = Double.NEGATIVE_INFINITY;
-		Move[] moves = g.getPossibleMoves();
+		Move[] moves = g.getPossibleMoves(playerNumber);
 		
 		for (int i = 0; i < moves.length; i++)
 		{
@@ -60,7 +60,7 @@ public class AlphaBetaPlayer extends Player
 	{
 		if (g.isGameOver()) return g.gameValue(playerNumber);
 		double val = Double.POSITIVE_INFINITY;
-		Move[] moves = g.getPossibleMoves();
+		Move[] moves = g.getPossibleMoves(playerNumber);
 		for (int i = 0; i < moves.length; i++)
 		{
 			if (moves[i] == null) break;

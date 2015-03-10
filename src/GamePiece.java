@@ -15,4 +15,9 @@ public class GamePiece
 		
 		currentCell = b.getCell(coordinates);
 	}
+	
+	public BoardCell getCurrentCell()
+	{
+		return currentCell;
+	}
 }

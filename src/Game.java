@@ -5,7 +5,7 @@ public interface Game
 	
 	public double gameValue(int player);
 
-	public Move[] getPossibleMoves();
+	public Move[] getPossibleMoves(int player);
 	
 	public void makeMove(Move move, int player); // 1 or 2
 	
