@@ -72,4 +72,9 @@ public class BoardCell
 	{
 		return edges;
 	}
+	
+	public BoardCellEdge getEdge(Direction direction)
+	{
+		return edges[direction.toInt()];
+	}
 }

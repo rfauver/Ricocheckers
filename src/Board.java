@@ -29,7 +29,7 @@ public class Board
 		{
 			for (int j = 0; j < dimensions.z; j++)
 			{
-				cells[i][j] = new BoardCell(new IntVector2(i, j), walls[i*j + j], this);
+				cells[i][j] = new BoardCell(new IntVector2(i, j), walls[i*dimensions.x + j], this);
 			}
 		}
 	}
@@ -116,5 +116,51 @@ public class Board
 		}
 		
 		return playerStartingPositions.toArray(new IntVector2[playerStartingPositions.size()]);
+	}
+	
+	public String toString()
+	{
+		String outString = "+---+---+---+---+---+---+---+---+---+---+---+\n";
+		
+		for (int i = 0; i < dimensions.x; i++)
+		{
+			for (int j = 0; j < dimensions.z; j++)
+			{
+				if (j == 0)
+					outString += "|";
+				
+				if (cells[i][j].piece == null)
+					outString += "   ";
+				else if (cells[i][j].piece.playerNumber == 1)
+					outString += " 1 ";
+				else if (cells[i][j].piece.playerNumber == 2)
+					outString += " 2 ";
+				else outString += "   ";
+				
+				if (j != dimensions.z-1)
+				{
+					if (cells[i][j].getEdge(Direction.EAST) instanceof BoardWall)
+						outString += "|";
+					else outString += " ";
+				}
+				else
+				{
+					if (cells[i][j].getEdge(Direction.EAST) instanceof BoardWall)
+						outString += "|\n";
+					else outString += " \n";
+				}
+			}
+			for (int j = 0; j < dimensions.z; j++)
+			{
+				if (j == 0)
+					outString += "+";
+				if (cells[i][j].getEdge(Direction.SOUTH) instanceof BoardWall)
+					outString += "---+";
+				else outString += "   +";
+				if (j == dimensions.z-1)
+					outString += "\n";
+			}
+		}
+		return outString;
 	}
 }

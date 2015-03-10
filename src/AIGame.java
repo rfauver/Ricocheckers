@@ -68,6 +68,7 @@ public class AIGame implements Game
 			for (int j = 0; j < edges.length; j++)
 			{
 				BoardCell currentCell = edges[j].cell;
+				System.out.println(edges[j].adjCell);
 				if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 				else
 				{
@@ -110,6 +111,11 @@ public class AIGame implements Game
 			board.getCell(moveStack.peek().destination).piece = move.piece;
 			move.piece.setCurrentCell(board.getCell(moveStack.peek().destination));
 		}
+	}
+	
+	public Board getBoard()
+	{
+		return board;
 	}
 
 }

@@ -8,6 +8,8 @@ public class BoardCellEdge
 	{
 		this.cell = cell;
 		adjCell = adjacentCell;
+		if (adjCell != null && adjCell.adjacent(dir.opposite()) == null)
+			adjCell.getEdge(dir.opposite()).adjCell = cell;
 		dir = direction;
 	}
 }
