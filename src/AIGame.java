@@ -52,7 +52,9 @@ public class AIGame implements Game
 
 	public double gameValue(int player) 
 	{
-		return 0;
+		if (!gameOver || winner == 0) return 0;
+		if (winner == player) return 1.0;
+		else return -1.0;
 	}
 
 	public Move[] getPossibleMoves(int player) 
