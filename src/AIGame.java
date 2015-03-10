@@ -18,7 +18,36 @@ public class AIGame implements Game
 
 	public boolean isGameOver() 
 	{
-		return false;
+		GamePiece[] player1Pieces = board.getPlayerPieces(1);
+		GamePiece[] player2Pieces = board.getPlayerPieces(2);
+
+		for (int i = 0; i < player1Pieces.length; i++)
+		{
+			if (player1Pieces[i].coordinates != player2Pieces[0].getStartingCell().coords
+			 && player1Pieces[i].coordinates != player2Pieces[1].getStartingCell().coords
+			 && player1Pieces[i].coordinates != player2Pieces[2].getStartingCell().coords)
+			{
+				break;
+			}
+			if (i == player1Pieces.length-1)
+			{
+				winner = 1;
+				gameOver = true;
+				return true;
+			}
+		}
+		for (int i = 0; i < player2Pieces.length; i++)
+		{
+			if (player2Pieces[i].coordinates != player1Pieces[0].getStartingCell().coords
+			 && player2Pieces[i].coordinates != player1Pieces[1].getStartingCell().coords
+			 && player2Pieces[i].coordinates != player1Pieces[2].getStartingCell().coords)
+			{
+				return false;
+			}
+		}
+		winner = 2;
+		gameOver = true;
+		return true;
 	}
 
 	public double gameValue(int player) 
@@ -48,7 +77,6 @@ public class AIGame implements Game
 				}
 			}
 		}
-
 		return null;
 	}
 
