@@ -68,19 +68,21 @@ public class AIGame implements Game
 			for (int j = 0; j < edges.length; j++)
 			{
 				BoardCell currentCell = edges[j].cell;
-				System.out.println(edges[j].adjCell);
 				if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 				else
 				{
+//					System.out.println("piece: " + pieces[i].coordinates.x + " " + pieces[i].coordinates.z + " player: " + pieces[i].playerNumber);
+//					System.out.println(edges[j].dir);
 					while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
 					{
 						currentCell = currentCell.getEdges()[j].adjCell;
 					}
 					moves.add(new Move(currentCell.coords, pieces[i]));
+//					System.out.println("x: " + currentCell.coords.x + " z: " + currentCell.coords.z + " player: " + pieces[i].playerNumber);
 				}
 			}
 		}
-		return null;
+		return moves.toArray(new Move[moves.size()]);
 	}
 
 	public void makeMove(Move move, int player) 

@@ -5,14 +5,18 @@ public class BoardCell
 	public GamePiece piece;
 
 	private Board board;
-	private BoardCellEdge[] edges = new BoardCellEdge[Direction.values().length];
+	private BoardCellEdge[] edges;
 
-	public BoardCell(IntVector2 coordinates, String walls, Board b)
+	public BoardCell(IntVector2 coordinates, Board b)
 	{
 		coords = coordinates;
 		board = b;
 		piece = null;
-
+		edges = new BoardCellEdge[Direction.values().length];
+	}
+	
+	public void createEdges(String walls)
+	{
 		boolean[] wall = new boolean[4];
 
 		int index = 0;
@@ -56,13 +60,13 @@ public class BoardCell
 		switch (dir)
 		{
 		case NORTH:
-			return board.getCell(new IntVector2(coords.x, coords.z + 1));
-		case EAST:
-			return board.getCell(new IntVector2(coords.x + 1, coords.z));
-		case SOUTH: 
-			return board.getCell(new IntVector2(coords.x, coords.z - 1));
-		case WEST:
 			return board.getCell(new IntVector2(coords.x - 1, coords.z));
+		case EAST:
+			return board.getCell(new IntVector2(coords.x, coords.z + 1));
+		case SOUTH: 
+			return board.getCell(new IntVector2(coords.x + 1, coords.z));
+		case WEST:
+			return board.getCell(new IntVector2(coords.x, coords.z - 1));
 		default:
 			return null;
 		} 

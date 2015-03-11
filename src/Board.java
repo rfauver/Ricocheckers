@@ -23,13 +23,21 @@ public class Board
 	}
 	
 	private void createCells()
-	{
+	{		
+		for (int i = 0; i < dimensions.x; i++)
+		{
+			for (int j = 0; j < dimensions.z; j++)
+			{
+				cells[i][j] = new BoardCell(new IntVector2(i, j), this);
+			}
+		}
+		
 		String[] walls = FileLoader.readFile("walls.txt", dimensions.x * dimensions.z);
 		for (int i = 0; i < dimensions.x; i++)
 		{
 			for (int j = 0; j < dimensions.z; j++)
 			{
-				cells[i][j] = new BoardCell(new IntVector2(i, j), walls[i*dimensions.x + j], this);
+				cells[i][j].createEdges(walls[i*dimensions.x + j]);
 			}
 		}
 	}
