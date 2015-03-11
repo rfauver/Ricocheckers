@@ -52,7 +52,22 @@ public class AIGame implements Game
 
 	public double gameValue(int player) 
 	{
-		if (!gameOver || winner == 0) return 0;
+		if (!gameOver || winner == 0) 
+		{
+			GamePiece[] pieces = board.getPlayerPieces(player);
+			int value = 0;
+			for (int i = 0; i < pieces.length; i++)
+			{	
+				int distanceToClosestGoal = BFS(pieces[i]);
+				if (distanceToClosestGoal == 0)
+				{
+					value += 1.0/(double)pieces.length;
+				}
+				value += (1.0/(double)distanceToClosestGoal)/(double)pieces.length;
+			}
+				
+			return value;
+		}
 		if (winner == player) return 1.0;
 		else return -1.0;
 	}
@@ -71,18 +86,36 @@ public class AIGame implements Game
 				if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 				else
 				{
-//					System.out.println("piece: " + pieces[i].coordinates.x + " " + pieces[i].coordinates.z + " player: " + pieces[i].playerNumber);
-//					System.out.println(edges[j].dir);
 					while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
 					{
 						currentCell = currentCell.getEdges()[j].adjCell;
 					}
 					moves.add(new Move(currentCell.coords, pieces[i]));
-//					System.out.println("x: " + currentCell.coords.x + " z: " + currentCell.coords.z + " player: " + pieces[i].playerNumber);
 				}
 			}
 		}
 		return moves.toArray(new Move[moves.size()]);
+	}
+	
+	private BoardCell[] getPossibleMovesFromCell(BoardCell cell)
+	{
+		BoardCellEdge[] edges = cell.getEdges();
+		ArrayList<BoardCell> destinationCells = new ArrayList<BoardCell>();
+		
+		for (int j = 0; j < edges.length; j++)
+		{
+			BoardCell currentCell = edges[j].cell;
+			if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
+			else
+			{
+				while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
+				{
+					currentCell = currentCell.getEdges()[j].adjCell;
+				}
+				destinationCells.add(currentCell);
+			}
+		}
+		return destinationCells.toArray(new BoardCell[destinationCells.size()]);
 	}
 
 	public void makeMove(Move move, int player) 
@@ -119,5 +152,44 @@ public class AIGame implements Game
 	{
 		return board;
 	}
-
+	
+	private int BFS(GamePiece piece)
+	{
+		BoardCell currentCell = board.getCell(piece.coordinates);
+		GamePiece[] opponentPieces = board.getPlayerPieces((piece.playerNumber%2)+1);
+		for (int index = 0; index < opponentPieces.length; index++)
+		{
+			if (currentCell == opponentPieces[index].getStartingCell())
+				return 0;
+		}
+		
+		HashMap hashmap = new HashMap();
+		Queue<BoardCell> q = new LinkedList<BoardCell>();
+		
+		q.add(currentCell);
+		hashmap.put(currentCell, null);
+		int time = 0;
+		
+		while (!q.isEmpty())
+		{
+			time++;
+			currentCell = q.poll();
+			BoardCell[] movableCells = getPossibleMovesFromCell(currentCell);
+			for (int i = 0; i < movableCells.length; i++)
+			{
+				if (!hashmap.containsKey(movableCells[i]))
+				{
+					
+					for (int j = 0; j < opponentPieces.length; j++)
+					{
+						if (movableCells[i] == opponentPieces[j].getStartingCell())
+							return time;
+					}
+					q.add(movableCells[i]);
+					hashmap.put(movableCells[i], null);
+				}
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
 }

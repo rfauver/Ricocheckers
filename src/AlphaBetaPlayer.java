@@ -3,9 +3,12 @@ public class AlphaBetaPlayer extends Player
 {
 	public int playerNumber;
 	
-	public AlphaBetaPlayer(int p)
+	private int maxDepth;
+	
+	public AlphaBetaPlayer(int p, int maxDepth)
 	{
 		playerNumber = p;
+		this.maxDepth = maxDepth;
 	}
 	
 	public void makeMove(Game g)
@@ -17,7 +20,7 @@ public class AlphaBetaPlayer extends Player
 		{
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
-			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if (curMin > max)
 			{
 				max = curMin;
@@ -28,9 +31,9 @@ public class AlphaBetaPlayer extends Player
 		g.makeMove(moves[moveIndex], playerNumber);
 	}
 	
-	public double maxValue(Game g, double alpha, double beta)
+	public double maxValue(Game g, double alpha, double beta, int depth)
 	{
-		if (g.isGameOver()) return g.gameValue(playerNumber);
+		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber);
 		double val = Double.NEGATIVE_INFINITY;
 		Move[] moves = g.getPossibleMoves(playerNumber);
 		
@@ -38,7 +41,7 @@ public class AlphaBetaPlayer extends Player
 		{
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
-			double curVal = minValue(g, alpha, beta);
+			double curVal = minValue(g, alpha, beta, depth+1);
 			g.undoMove();
 			if (curVal > val)
 			{
@@ -56,16 +59,16 @@ public class AlphaBetaPlayer extends Player
 		return val;
 	}
 	
-	private double minValue(Game g, double alpha, double beta)
+	private double minValue(Game g, double alpha, double beta, int depth)
 	{
-		if (g.isGameOver()) return g.gameValue(playerNumber);
+		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber);
 		double val = Double.POSITIVE_INFINITY;
 		Move[] moves = g.getPossibleMoves(playerNumber);
 		for (int i = 0; i < moves.length; i++)
 		{
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber%2+1);
-			double curVal = maxValue(g, alpha, beta);
+			double curVal = maxValue(g, alpha, beta, depth+1);
 			g.undoMove();
 			if (curVal < val)
 			{
