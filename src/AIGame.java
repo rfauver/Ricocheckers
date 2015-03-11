@@ -63,9 +63,8 @@ public class AIGame implements Game
 				{
 					value += 1.0/(double)pieces.length;
 				}
-				value += (1.0/(double)distanceToClosestGoal)/(double)pieces.length;
+				else value += (1.0/(double)distanceToClosestGoal)/(double)pieces.length;
 			}
-				
 			return value;
 		}
 		if (winner == player) return 1.0;
