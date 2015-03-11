@@ -55,10 +55,11 @@ public class AIGame implements Game
 		if (!gameOver || winner == 0) 
 		{
 			GamePiece[] pieces = board.getPlayerPieces(player);
-			int value = 0;
+			double value = 0;
 			for (int i = 0; i < pieces.length; i++)
 			{	
 				int distanceToClosestGoal = BFS(pieces[i]);
+				System.out.println(distanceToClosestGoal);
 				if (distanceToClosestGoal == 0)
 				{
 					value += 1.0/(double)pieces.length;
@@ -97,7 +98,7 @@ public class AIGame implements Game
 		return moves.toArray(new Move[moves.size()]);
 	}
 	
-	private BoardCell[] getPossibleMovesFromCell(BoardCell cell)
+	private BoardCell[] getPossibleMovesFromCell(BoardCell cell, int playerNumber)
 	{
 		BoardCellEdge[] edges = cell.getEdges();
 		ArrayList<BoardCell> destinationCells = new ArrayList<BoardCell>();
@@ -108,7 +109,7 @@ public class AIGame implements Game
 			if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 			else
 			{
-				while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
+				while (currentCell.getEdges()[j] instanceof BoardPassage)
 				{
 					currentCell = currentCell.getEdges()[j].adjCell;
 				}
@@ -124,6 +125,7 @@ public class AIGame implements Game
 		board.getCell(move.destination).piece = move.piece;
 
 		move.piece.setCurrentCell(board.getCell(move.destination));
+		move.piece.coordinates = move.destination;
 
 		moveStack.push(move);
 	}
@@ -156,37 +158,35 @@ public class AIGame implements Game
 	private int BFS(GamePiece piece)
 	{
 		BoardCell currentCell = board.getCell(piece.coordinates);
-		GamePiece[] opponentPieces = board.getPlayerPieces((piece.playerNumber%2)+1);
-		for (int index = 0; index < opponentPieces.length; index++)
+		
+		System.out.println(currentCell.coords.x + " " + currentCell.coords.z);
+		if (currentCell.isGoal(piece.playerNumber))
 		{
-			if (currentCell == opponentPieces[index].getStartingCell())
-				return 0;
+			return 0;
 		}
 		
-		HashMap hashmap = new HashMap();
+		HashMap<BoardCell, Integer> hashmap = new HashMap<BoardCell, Integer>();
 		Queue<BoardCell> q = new LinkedList<BoardCell>();
 		
 		q.add(currentCell);
-		hashmap.put(currentCell, null);
-		int time = 0;
+		hashmap.put(currentCell, 0);
 		
 		while (!q.isEmpty())
 		{
-			time++;
 			currentCell = q.poll();
-			BoardCell[] movableCells = getPossibleMovesFromCell(currentCell);
+			BoardCell[] movableCells = getPossibleMovesFromCell(currentCell, piece.playerNumber);
 			for (int i = 0; i < movableCells.length; i++)
 			{
+				
 				if (!hashmap.containsKey(movableCells[i]))
 				{
-					
-					for (int j = 0; j < opponentPieces.length; j++)
+					if (movableCells[i].isGoal(piece.playerNumber))
 					{
-						if (movableCells[i] == opponentPieces[j].getStartingCell())
-							return time;
+						return hashmap.get(currentCell) + 1;
 					}
+					
 					q.add(movableCells[i]);
-					hashmap.put(movableCells[i], null);
+					hashmap.put(movableCells[i], hashmap.get(currentCell)+1);
 				}
 			}
 		}

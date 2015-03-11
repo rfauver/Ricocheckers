@@ -81,4 +81,15 @@ public class BoardCell
 	{
 		return edges[direction.toInt()];
 	}
+	
+	public boolean isGoal(int playerNumber)
+	{
+		GamePiece[] opponentPieces = board.getPlayerPieces((playerNumber%2)+1);
+		for (int i = 0; i < opponentPieces.length; i++)
+		{
+			if (this == opponentPieces[i].getStartingCell())
+				return true;
+		}
+		return false;
+	}
 }
