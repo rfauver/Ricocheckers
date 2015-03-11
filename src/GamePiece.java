@@ -3,16 +3,16 @@ public class GamePiece
 {
 	public IntVector2 coordinates;
 	public int playerNumber;
+	public int index;
 	
-	private Board board;
 	private BoardCell currentCell;
 	private final BoardCell startingCell;
 	
-	public GamePiece(IntVector2 coordinates, int playerNumber, Board b)
+	public GamePiece(IntVector2 coordinates, int playerNumber, Board b, int index)
 	{
 		this.coordinates = coordinates;
 		this.playerNumber = playerNumber;
-		board = b;
+		this.index = index;
 		
 		currentCell = b.getCell(coordinates);
 		startingCell = currentCell;

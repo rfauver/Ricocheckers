@@ -28,6 +28,7 @@ public class AlphaBetaPlayer extends Player
 			}
 			g.undoMove();
 		}
+//		System.out.println("x: " + moves[moveIndex].destination.x + "  z: " + moves[moveIndex].destination.z + "  player: " + playerNumber);
 		g.makeMove(moves[moveIndex], playerNumber);
 	}
 	

@@ -59,7 +59,6 @@ public class AIGame implements Game
 			for (int i = 0; i < pieces.length; i++)
 			{	
 				int distanceToClosestGoal = BFS(pieces[i]);
-				System.out.println(distanceToClosestGoal);
 				if (distanceToClosestGoal == 0)
 				{
 					value += 1.0/(double)pieces.length;
@@ -91,7 +90,7 @@ public class AIGame implements Game
 					{
 						currentCell = currentCell.getEdges()[j].adjCell;
 					}
-					moves.add(new Move(currentCell.coords, pieces[i]));
+					moves.add(new Move(currentCell.coords, pieces[i].coordinates, pieces[i]));
 				}
 			}
 		}
@@ -133,21 +132,18 @@ public class AIGame implements Game
 	public void undoMove() 
 	{
 		if (moveStack.isEmpty()) { return; }
-		if (gameOver) gameOver = false;
-		winner = 0;
+		if (gameOver) 
+		{
+			gameOver = false;
+			winner = 0;
+		}
 		Move move = moveStack.pop();
+		GamePiece piece = move.piece;
 
-		move.piece.getCurrentCell().piece = null;
-		if (moveStack.empty())
-		{
-			move.piece.getStartingCell().piece = move.piece;
-			move.piece.setCurrentCell(move.piece.getStartingCell());
-		}
-		else 
-		{
-			board.getCell(moveStack.peek().destination).piece = move.piece;
-			move.piece.setCurrentCell(board.getCell(moveStack.peek().destination));
-		}
+		piece.getCurrentCell().piece = null;
+		piece.setCurrentCell(board.getCell(move.from));
+		piece.getCurrentCell().piece = piece;
+		piece.coordinates = move.from;
 	}
 	
 	public Board getBoard()
@@ -158,8 +154,6 @@ public class AIGame implements Game
 	private int BFS(GamePiece piece)
 	{
 		BoardCell currentCell = board.getCell(piece.coordinates);
-		
-		System.out.println(currentCell.coords.x + " " + currentCell.coords.z);
 		if (currentCell.isGoal(piece.playerNumber))
 		{
 			return 0;

@@ -103,7 +103,7 @@ public class TicTacToe implements Game {
 			{
 				if (board[i][j] == 0)
 				{
-					moves[count] = new Move(new IntVector2(i, j), null);
+					moves[count] = new Move(new IntVector2(i, j), null, null);
 					count++;
 				}
 			}

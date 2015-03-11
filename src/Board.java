@@ -76,7 +76,7 @@ public class Board
 			}
 			tempPlayer = Integer.parseInt(temp);
 			IntVector2 coords = new IntVector2(tempX, tempZ);
-			pieces[i] = new GamePiece(coords, tempPlayer, this);
+			pieces[i] = new GamePiece(coords, tempPlayer, this, i);
 			startingPositions[i] = coords;
 			getCell(coords).piece = pieces[i];
 		}
@@ -124,6 +124,14 @@ public class Board
 		}
 		
 		return playerStartingPositions.toArray(new IntVector2[playerStartingPositions.size()]);
+	}
+	
+	public void setPieces(GamePiece[] pieceConfiguration)
+	{
+		for (int i = 0; i < pieces.length; i++)
+		{
+			pieces[i] = pieceConfiguration[i];
+		}
 	}
 	
 	public String toString()
