@@ -21,6 +21,7 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
 			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			System.out.println("curMin: " + curMin);
 			if (curMin > max)
 			{
 				max = curMin;
@@ -28,7 +29,7 @@ public class AlphaBetaPlayer extends Player
 			}
 			g.undoMove();
 		}
-//		System.out.println("x: " + moves[moveIndex].destination.x + "  z: " + moves[moveIndex].destination.z + "  player: " + playerNumber);
+		System.out.println("max: " + max);
 		g.makeMove(moves[moveIndex], playerNumber);
 	}
 	

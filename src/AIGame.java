@@ -55,15 +55,26 @@ public class AIGame implements Game
 		if (!gameOver || winner == 0) 
 		{
 			GamePiece[] pieces = board.getPlayerPieces(player);
+			BoardCell[] goals = board.getPlayerStartingCells((player%2)+1);
+			ArrayList<BoardCell> unfilledGoals = new ArrayList<BoardCell>();
+			
+			for (int i = 0; i < goals.length; i++)
+			{
+				if (goals[i].piece == null)
+				{
+					unfilledGoals.add(goals[i]);
+				}
+			}
+			goals = unfilledGoals.toArray(new BoardCell[unfilledGoals.size()]);
 			double value = 0;
 			for (int i = 0; i < pieces.length; i++)
 			{	
-				int distanceToClosestGoal = BFS(pieces[i]);
+				int distanceToClosestGoal = BFS(pieces[i], goals);
 				if (distanceToClosestGoal == 0)
 				{
 					value += 1.0/(double)pieces.length;
 				}
-				else value += (1.0/(double)distanceToClosestGoal)/(double)pieces.length;
+				else value += (1.0/((double)distanceToClosestGoal+1))/(double)pieces.length;
 			}
 			return value;
 		}
@@ -103,15 +114,14 @@ public class AIGame implements Game
 		
 		for (int j = 0; j < edges.length; j++)
 		{
-			BoardCell currentCell = edges[j].cell;
 			if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 			else
 			{
-				while (currentCell.getEdges()[j] instanceof BoardPassage)
+				while (cell.getEdges()[j] instanceof BoardPassage)
 				{
-					currentCell = currentCell.getEdges()[j].adjCell;
+					cell = cell.getEdges()[j].adjCell;
 				}
-				destinationCells.add(currentCell);
+				destinationCells.add(cell);
 			}
 		}
 		return destinationCells.toArray(new BoardCell[destinationCells.size()]);
@@ -150,14 +160,19 @@ public class AIGame implements Game
 		return board;
 	}
 	
-	private int BFS(GamePiece piece)
+	private int[] BFS(GamePiece piece, BoardCell[] goals)
 	{
 		BoardCell currentCell = board.getCell(piece.coordinates);
-		if (currentCell.isGoal(piece.playerNumber))
+		int[] distances = new int[goals.length];
+		int found = 0;
+		for (int i = 0; i < goals.length; i++)
 		{
-			return 0;
-		}
-		
+			if (currentCell == goals[i])
+			{
+				distances[i] = 0;
+				found++;
+			}
+		}	
 		HashMap<BoardCell, Integer> hashmap = new HashMap<BoardCell, Integer>();
 		Queue<BoardCell> q = new LinkedList<BoardCell>();
 		
@@ -166,23 +181,29 @@ public class AIGame implements Game
 		
 		while (!q.isEmpty())
 		{
+			if (found == goals.length)
+			{
+				return distances;
+			}
 			currentCell = q.poll();
 			BoardCell[] movableCells = getPossibleMovesFromCell(currentCell, piece.playerNumber);
 			for (int i = 0; i < movableCells.length; i++)
-			{
-				
+			{	
 				if (!hashmap.containsKey(movableCells[i]))
-				{
-					if (movableCells[i].isGoal(piece.playerNumber))
+				{					
+					for (int j = 0; j < goals.length; j++)
 					{
-						return hashmap.get(currentCell) + 1;
-					}
-					
+						if (movableCells[i] == goals[j])
+						{
+							distances[j] = hashmap.get(currentCell) + 1;
+							found++;
+						}
+					}				
 					q.add(movableCells[i]);
 					hashmap.put(movableCells[i], hashmap.get(currentCell)+1);
 				}
 			}
 		}
-		return Integer.MAX_VALUE;
+		return distances;
 	}
 }
