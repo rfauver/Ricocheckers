@@ -83,10 +83,6 @@ public class AIGame implements Game
 				{
 					for (int k = 0; k < distanceToGoals[j].length; k++)
 					{
-//						if (goals.length == 2)
-//						{
-//							System.out.println("Goals: " + goals.length + "\tpiece: " + j + "\tgoal: " + k + " \tminDistance: " + minDistance + "\tdistanceToGoals[j][k]: " + distanceToGoals[j][k]);
-//						}
 						if (distanceToGoals[j][k] < minDistance)
 						{
 							minDistance = distanceToGoals[j][k];
@@ -95,10 +91,6 @@ public class AIGame implements Game
 						}
 					}	
 				}
-//				if (value*3 == 1.0)
-//				{
-//					System.out.println("distance to goals: " + distanceToGoals[minPieceIndex][minMoveIndex]);
-//				}
 				value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
 				for (int j = 0; j < distanceToGoals.length; j++)
 				{
@@ -108,10 +100,6 @@ public class AIGame implements Game
 				{
 					distanceToGoals[minPieceIndex][j] = Integer.MAX_VALUE;
 				}
-			}
-			if (value == 1.0)
-			{
-//				System.out.println("got here");
 			}
 			return value;
 		}
@@ -148,17 +136,17 @@ public class AIGame implements Game
 	{
 		BoardCellEdge[] edges = cell.getEdges();
 		ArrayList<BoardCell> destinationCells = new ArrayList<BoardCell>();
-		
 		for (int j = 0; j < edges.length; j++)
 		{
+			BoardCell currentCell = cell;
 			if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 			else
 			{
-				while (cell.getEdges()[j] instanceof BoardPassage)
+				while (currentCell.getEdges()[j] instanceof BoardPassage)
 				{
-					cell = cell.getEdges()[j].adjCell;
+					currentCell = currentCell.getEdges()[j].adjCell;
 				}
-				destinationCells.add(cell);
+				destinationCells.add(currentCell);
 			}
 		}
 		return destinationCells.toArray(new BoardCell[destinationCells.size()]);
@@ -202,14 +190,7 @@ public class AIGame implements Game
 		BoardCell currentCell = board.getCell(piece.coordinates);
 		int[] distances = new int[goals.length];
 		int found = 0;
-//		for (int i = 0; i < goals.length; i++)
-//		{
-//			if (currentCell == goals[i])
-//			{
-//				distances[i] = 0;
-//				found++;
-//			}
-//		}	
+
 		HashMap<BoardCell, Integer> hashmap = new HashMap<BoardCell, Integer>();
 		Queue<BoardCell> q = new LinkedList<BoardCell>();
 		
