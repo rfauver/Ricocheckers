@@ -60,21 +60,50 @@ public class AIGame implements Game
 			
 			for (int i = 0; i < goals.length; i++)
 			{
-				if (goals[i].piece == null)
+				if (goals[i].piece == null || goals[i].piece.playerNumber == (player%2)+1)
 				{
 					unfilledGoals.add(goals[i]);
 				}
 			}
+
 			goals = unfilledGoals.toArray(new BoardCell[unfilledGoals.size()]);
+			int[][] distanceToGoals = new int[pieces.length][goals.length];
 			double value = 0;
 			for (int i = 0; i < pieces.length; i++)
 			{	
-				int distanceToClosestGoal = BFS(pieces[i], goals);
-				if (distanceToClosestGoal == 0)
+				int[] bfsResult = BFS(pieces[i], goals);	
+				for (int j = 0; j < goals.length; j++)
 				{
-					value += 1.0/(double)pieces.length;
+					distanceToGoals[i][j] = bfsResult[j];
 				}
-				else value += (1.0/((double)distanceToClosestGoal+1))/(double)pieces.length;
+			}
+			
+			for (int i = 0; i < pieces.length; i++)
+			{
+				int minMoveIndex = -1;
+				int minPieceIndex = -1;
+				int minDistance = Integer.MAX_VALUE;
+				for (int j = 0; j < distanceToGoals.length; j++)
+				{
+					for (int k = 0; k < distanceToGoals[j].length; k++)
+					{
+						if (distanceToGoals[j][k] < minDistance)
+						{
+							minDistance = distanceToGoals[j][k];
+							minPieceIndex = j;
+							minMoveIndex = k;
+						}
+					}	
+				}
+				value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
+				for (int j = 0; j < distanceToGoals.length; j++)
+				{
+					distanceToGoals[j][minMoveIndex] = Integer.MAX_VALUE;
+				}
+				for (int j = 0; j < distanceToGoals[minPieceIndex].length; j++)
+				{
+					distanceToGoals[minPieceIndex][j] = Integer.MAX_VALUE;
+				}
 			}
 			return value;
 		}
