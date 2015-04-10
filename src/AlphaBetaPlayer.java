@@ -21,7 +21,7 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
 			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-//			System.out.println("curMin: " + curMin);
+			System.out.println("curMin: " + curMin + "\t\tmove: " + moves[i].destination.x + " " + moves[i].destination.z);
 			if (curMin > max)
 			{
 				max = curMin;

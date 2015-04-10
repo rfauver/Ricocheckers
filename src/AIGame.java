@@ -190,7 +190,7 @@ public class AIGame implements Game
 		BoardCell currentCell = board.getCell(piece.coordinates);
 		int[] distances = new int[goals.length];
 		int found = 0;
-
+		
 		HashMap<BoardCell, Integer> hashmap = new HashMap<BoardCell, Integer>();
 		Queue<BoardCell> q = new LinkedList<BoardCell>();
 		
@@ -203,20 +203,28 @@ public class AIGame implements Game
 			{
 				return distances;
 			}
+			for (int i = 0; i < goals.length; i++)
+			{
+				if (currentCell == goals[i])
+				{
+					distances[i] = hashmap.get(currentCell);
+					found++;
+				}
+			}
 			currentCell = q.poll();
 			BoardCell[] movableCells = getPossibleMovesFromCell(currentCell, piece.playerNumber);
 			for (int i = 0; i < movableCells.length; i++)
 			{	
 				if (!hashmap.containsKey(movableCells[i]))
 				{					
-					for (int j = 0; j < goals.length; j++)
-					{
-						if (movableCells[i] == goals[j])
-						{
-							distances[j] = hashmap.get(currentCell) + 1;
-							found++;
-						}
-					}				
+//					for (int j = 0; j < goals.length; j++)
+//					{
+//						if (movableCells[i] == goals[j])
+//						{
+//							distances[j] = hashmap.get(currentCell) + 1;
+//							found++;
+//						}
+//					}				
 					q.add(movableCells[i]);
 					hashmap.put(movableCells[i], hashmap.get(currentCell)+1);
 				}
