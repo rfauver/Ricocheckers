@@ -142,7 +142,7 @@ public class AIGame implements Game
 			if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
 			else
 			{
-				while (currentCell.getEdges()[j] instanceof BoardPassage)
+				while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
 				{
 					currentCell = currentCell.getEdges()[j].adjCell;
 				}
@@ -189,6 +189,7 @@ public class AIGame implements Game
 	{
 		BoardCell currentCell = board.getCell(piece.coordinates);
 		int[] distances = new int[goals.length];
+		Arrays.fill(distances, -1);
 		int found = 0;
 		
 		HashMap<BoardCell, Integer> hashmap = new HashMap<BoardCell, Integer>();
@@ -203,28 +204,20 @@ public class AIGame implements Game
 			{
 				return distances;
 			}
+			currentCell = q.poll();
 			for (int i = 0; i < goals.length; i++)
 			{
-				if (currentCell == goals[i])
+				if (currentCell == goals[i] && distances[i] == -1)
 				{
 					distances[i] = hashmap.get(currentCell);
 					found++;
 				}
 			}
-			currentCell = q.poll();
 			BoardCell[] movableCells = getPossibleMovesFromCell(currentCell, piece.playerNumber);
 			for (int i = 0; i < movableCells.length; i++)
 			{	
 				if (!hashmap.containsKey(movableCells[i]))
-				{					
-//					for (int j = 0; j < goals.length; j++)
-//					{
-//						if (movableCells[i] == goals[j])
-//						{
-//							distances[j] = hashmap.get(currentCell) + 1;
-//							found++;
-//						}
-//					}				
+				{								
 					q.add(movableCells[i]);
 					hashmap.put(movableCells[i], hashmap.get(currentCell)+1);
 				}
