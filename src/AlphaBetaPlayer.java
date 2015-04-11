@@ -21,7 +21,7 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
 			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-			System.out.println("curMin: " + curMin + "\t\tmove: " + moves[i].destination.x + " " + moves[i].destination.z);
+//			System.out.println("curMin: " + curMin + "\t\tmove: " + moves[i].destination.x + " " + moves[i].destination.z);
 			if (curMin > max)
 			{
 				max = curMin;
@@ -65,7 +65,7 @@ public class AlphaBetaPlayer extends Player
 	{
 		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber);
 		double val = Double.POSITIVE_INFINITY;
-		Move[] moves = g.getPossibleMoves(playerNumber);
+		Move[] moves = g.getPossibleMoves(playerNumber%2+1);
 		for (int i = 0; i < moves.length; i++)
 		{
 			if (moves[i] == null) break;

@@ -60,7 +60,7 @@ public class AIGame implements Game
 			
 			for (int i = 0; i < goals.length; i++)
 			{
-				if (goals[i].piece == null || goals[i].piece.playerNumber == (player%2)+1)
+				if (goals[i].piece == null)// || goals[i].piece.playerNumber == (player%2)+1)
 				{
 					unfilledGoals.add(goals[i]);
 				}
@@ -92,6 +92,10 @@ public class AIGame implements Game
 					}	
 				}
 				value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
+				if (value > 1000)
+				{
+					System.out.println("yup");
+				}
 				for (int j = 0; j < distanceToGoals.length; j++)
 				{
 					distanceToGoals[j][minMoveIndex] = Integer.MAX_VALUE;
@@ -223,6 +227,7 @@ public class AIGame implements Game
 				}
 			}
 		}
+		Arrays.fill(distances, Integer.MAX_VALUE-1);
 		return distances;
 	}
 }
