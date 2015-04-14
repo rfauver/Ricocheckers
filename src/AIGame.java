@@ -91,10 +91,9 @@ public class AIGame implements Game
 						}
 					}	
 				}
-				value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
-				if (value > 1000)
+				if (distanceToGoals[minPieceIndex][minMoveIndex] >= 0)
 				{
-					System.out.println("yup");
+					value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
 				}
 				for (int j = 0; j < distanceToGoals.length; j++)
 				{
@@ -175,6 +174,7 @@ public class AIGame implements Game
 			gameOver = false;
 			winner = 0;
 		}
+		winner = 0;
 		Move move = moveStack.pop();
 		GamePiece piece = move.piece;
 
@@ -189,9 +189,11 @@ public class AIGame implements Game
 		return board;
 	}
 	
-	private int[] BFS(GamePiece piece, BoardCell[] goals)
+	public int[] BFS(GamePiece piece, BoardCell[] goals)
 	{
-		BoardCell currentCell = board.getCell(piece.coordinates);
+		BoardCell startingCell = board.getCell(piece.coordinates);
+		BoardCell currentCell = startingCell;
+		startingCell.piece = null;
 		int[] distances = new int[goals.length];
 		Arrays.fill(distances, -1);
 		int found = 0;
@@ -206,6 +208,7 @@ public class AIGame implements Game
 		{
 			if (found == goals.length)
 			{
+				startingCell.piece = piece;
 				return distances;
 			}
 			currentCell = q.poll();
@@ -224,10 +227,12 @@ public class AIGame implements Game
 				{								
 					q.add(movableCells[i]);
 					hashmap.put(movableCells[i], hashmap.get(currentCell)+1);
+//					System.out.println("cell: " + movableCells[i].coords + "\tdist: " + (hashmap.get(currentCell)+1));
 				}
 			}
 		}
-		Arrays.fill(distances, Integer.MAX_VALUE-1);
+//		Arrays.fill(distances, -2);
+		startingCell.piece = piece;
 		return distances;
 	}
 }

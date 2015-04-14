@@ -5,6 +5,8 @@ public class AlphaBetaPlayer extends Player
 	
 	private int maxDepth;
 	
+	private Move[] lastTwoMoves = new Move[2];
+	
 	public AlphaBetaPlayer(int p, int maxDepth)
 	{
 		playerNumber = p;
@@ -19,6 +21,13 @@ public class AlphaBetaPlayer extends Player
 		for (int i = 0; i < moves.length; i++)
 		{
 			if (moves[i] == null) break;
+			if (lastTwoMoves[1] != null && moves[i].destination == lastTwoMoves[1].destination)
+			{
+				if (i < moves.length-1)
+					moves[i] = moves[i+1];
+				else 
+					moves[i] = moves[i-1];
+			}
 			g.makeMove(moves[i], playerNumber);
 			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 //			System.out.println("curMin: " + curMin + "\t\tmove: " + moves[i].destination.x + " " + moves[i].destination.z);
@@ -30,10 +39,12 @@ public class AlphaBetaPlayer extends Player
 			g.undoMove();
 		}
 		System.out.println("max: " + max);
+		lastTwoMoves[1] = lastTwoMoves[0];
+		lastTwoMoves[0] = moves[moveIndex];
 		g.makeMove(moves[moveIndex], playerNumber);
 	}
 	
-	public double maxValue(Game g, double alpha, double beta, int depth)
+	private double maxValue(Game g, double alpha, double beta, int depth)
 	{
 		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber);
 		double val = Double.NEGATIVE_INFINITY;
@@ -44,6 +55,7 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
 			double curVal = minValue(g, alpha, beta, depth+1);
+//			System.out.println("max  " + curVal + "\tdepth  " + (depth+1));
 			g.undoMove();
 			if (curVal > val)
 			{
@@ -71,6 +83,7 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber%2+1);
 			double curVal = maxValue(g, alpha, beta, depth+1);
+//			System.out.println("min  " + curVal);
 			g.undoMove();
 			if (curVal < val)
 			{

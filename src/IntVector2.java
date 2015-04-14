@@ -8,4 +8,9 @@ public class IntVector2
 		this.x = x;
 		this.z = z;
 	}
+	
+	public String toString()
+	{
+		return "x: " + x + "  z: " + z;
+	}
 }
