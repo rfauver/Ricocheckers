@@ -4,8 +4,9 @@ public class Main
 	public static void main(String[] args) 
 	{
 		AIGame AIG = new AIGame();
-		Player p1 = new AlphaBetaPlayer(1, 6);
-		Player p2 = new AlphaBetaPlayer(2, 6);
+		Player p1 = new AlphaBetaPlayer(1, 4);
+		Player p2 = new AlphaBetaPlayer(2, 4);
+		int moves = 0;
 		
 //		GamePiece testPiece = AIG.getBoard().getPlayerPieces(1)[0];
 //		System.out.println(testPiece.coordinates.x + "  " + testPiece.coordinates.z);
@@ -17,12 +18,15 @@ public class Main
 		while(!AIG.gameOver)
 		{
 			p1.makeMove(AIG);
+			moves++;
 			AIG.gameOver = AIG.isGameOver();
 			System.out.println(AIG.getBoard().toString());
 			if (AIG.gameOver) break;
 			p2.makeMove(AIG);
+			moves++;
 			AIG.gameOver = AIG.isGameOver();
 			System.out.println(AIG.getBoard().toString());
 		}
+		System.out.println("game over in " + moves + " moves");
 	}
 }

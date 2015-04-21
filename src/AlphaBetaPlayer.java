@@ -54,20 +54,20 @@ public class AlphaBetaPlayer extends Player
 		{
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
-			double curVal = minValue(g, alpha, beta, depth+1);
+			double curVal = Math.max(val, minValue(g, alpha, beta, depth+1));
 //			System.out.println("max  " + curVal + "\tdepth  " + (depth+1));
 			g.undoMove();
 			if (curVal > val)
 			{
 				val = curVal;
 			}
-			if (val >= beta)
-			{
-				return val;
-			}
 			if (val > alpha)
 			{
 				alpha = val;
+			}
+			if (val >= beta)
+			{
+				return val;
 			}
 		}
 		return val;
@@ -82,20 +82,20 @@ public class AlphaBetaPlayer extends Player
 		{
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber%2+1);
-			double curVal = maxValue(g, alpha, beta, depth+1);
+			double curVal = Math.min(val, maxValue(g, alpha, beta, depth+1));
 //			System.out.println("min  " + curVal);
 			g.undoMove();
 			if (curVal < val)
 			{
 				val = curVal;
 			}
-			if (val <= alpha)
-			{
-				return val;
-			}
 			if (val < beta)
 			{
 				beta = val;
+			}
+			if (val <= alpha)
+			{
+				return val;
 			}
 		}
 		return val;

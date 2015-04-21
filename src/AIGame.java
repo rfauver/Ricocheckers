@@ -93,7 +93,8 @@ public class AIGame implements Game
 				}
 				if (distanceToGoals[minPieceIndex][minMoveIndex] >= 0)
 				{
-					value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
+//					value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
+					value += (double)(20 - distanceToGoals[minPieceIndex][minMoveIndex])/(double)pieces.length;
 				}
 				for (int j = 0; j < distanceToGoals.length; j++)
 				{
@@ -106,8 +107,8 @@ public class AIGame implements Game
 			}
 			return value;
 		}
-		if (winner == player) return 1.0;
-		else return -1.0;
+		if (winner == player) return 20.0;
+		else return -20.0;
 	}
 
 	public Move[] getPossibleMoves(int player) 
