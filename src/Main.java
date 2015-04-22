@@ -15,6 +15,26 @@ public class Main
 //		testGoal[0] = AIG.getBoard().getCell(new IntVector2(8,9));
 //		System.out.println(AIG.BFS(testPiece, testGoal)[0]);
 		
+//		GamePiece[] pieces = AIG.getBoard().getPieces();
+//		for (int i = 0; i < pieces.length; i++)
+//		{
+//			if (pieces[i].playerNumber == 1)
+//			{
+//				Move temp = new Move(new IntVector2(i, i), pieces[i].coordinates, pieces[i]);
+//				AIG.makeMove(temp, 1);
+//			}
+//			else 
+//			{
+//				Move temp = new Move(new IntVector2(0, i+1), pieces[i].coordinates, pieces[i]);
+//				AIG.makeMove(temp, 2);
+//			}
+//		}
+//		p2.makeMove(AIG);
+//		p2.makeMove(AIG);
+//		p2.makeMove(AIG);
+//		System.out.println(AIG.getBoard().toString());
+//		System.out.println(AIG.gameValue(2));
+		
 		while(!AIG.gameOver)
 		{
 			p1.makeMove(AIG);
@@ -23,7 +43,6 @@ public class Main
 			System.out.println(AIG.getBoard().toString());
 			if (AIG.gameOver) break;
 			p2.makeMove(AIG);
-			moves++;
 			AIG.gameOver = AIG.isGameOver();
 			System.out.println(AIG.getBoard().toString());
 		}

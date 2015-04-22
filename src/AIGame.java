@@ -56,7 +56,21 @@ public class AIGame implements Game
 		{
 			GamePiece[] pieces = board.getPlayerPieces(player);
 			BoardCell[] goals = board.getPlayerStartingCells((player%2)+1);
+			ArrayList<GamePiece> unfinishedPieces = new ArrayList<GamePiece>();
 			ArrayList<BoardCell> unfilledGoals = new ArrayList<BoardCell>();
+			
+			for (int i = 0; i < pieces.length; i++)
+			{
+				boolean isGoal = false;
+				for (int j = 0; j < goals.length; j++)
+				{
+					if (pieces[i].coordinates == goals[j].coords)
+					{
+						isGoal = true;
+					}
+				}
+				if (!isGoal) unfinishedPieces.add(pieces[i]);
+			}
 			
 			for (int i = 0; i < goals.length; i++)
 			{
@@ -65,7 +79,8 @@ public class AIGame implements Game
 					unfilledGoals.add(goals[i]);
 				}
 			}
-
+			
+			pieces = unfinishedPieces.toArray(new GamePiece[unfinishedPieces.size()]);
 			goals = unfilledGoals.toArray(new BoardCell[unfilledGoals.size()]);
 			int[][] distanceToGoals = new int[pieces.length][goals.length];
 			double value = 0;
@@ -91,24 +106,27 @@ public class AIGame implements Game
 						}
 					}	
 				}
-				if (distanceToGoals[minPieceIndex][minMoveIndex] >= 0)
+				if (minPieceIndex >= 0 && minMoveIndex >= 0)
 				{
-//					value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
-					value += (double)(20 - distanceToGoals[minPieceIndex][minMoveIndex])/(double)pieces.length;
-				}
-				for (int j = 0; j < distanceToGoals.length; j++)
-				{
-					distanceToGoals[j][minMoveIndex] = Integer.MAX_VALUE;
-				}
-				for (int j = 0; j < distanceToGoals[minPieceIndex].length; j++)
-				{
-					distanceToGoals[minPieceIndex][j] = Integer.MAX_VALUE;
+					if (distanceToGoals[minPieceIndex][minMoveIndex] >= 0)
+					{
+						value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
+//						value += (double)(20 - distanceToGoals[minPieceIndex][minMoveIndex])/(double)pieces.length;
+					}
+					for (int j = 0; j < distanceToGoals.length; j++)
+					{
+						distanceToGoals[j][minMoveIndex] = Integer.MAX_VALUE;
+					}
+					for (int j = 0; j < distanceToGoals[minPieceIndex].length; j++)
+					{
+						distanceToGoals[minPieceIndex][j] = Integer.MAX_VALUE;
+					}
 				}
 			}
 			return value;
 		}
-		if (winner == player) return 20.0;
-		else return -20.0;
+		if (winner == player) return 1.0;
+		else return -1.0;
 	}
 
 	public Move[] getPossibleMoves(int player) 
@@ -190,13 +208,13 @@ public class AIGame implements Game
 		return board;
 	}
 	
-	public int[] BFS(GamePiece piece, BoardCell[] goals)
+	private int[] BFS(GamePiece piece, BoardCell[] goals)
 	{
 		BoardCell startingCell = board.getCell(piece.coordinates);
 		BoardCell currentCell = startingCell;
 		startingCell.piece = null;
 		int[] distances = new int[goals.length];
-		Arrays.fill(distances, -1);
+		Arrays.fill(distances, Integer.MAX_VALUE);
 		int found = 0;
 		
 		HashMap<BoardCell, Integer> hashmap = new HashMap<BoardCell, Integer>();
@@ -215,7 +233,7 @@ public class AIGame implements Game
 			currentCell = q.poll();
 			for (int i = 0; i < goals.length; i++)
 			{
-				if (currentCell == goals[i] && distances[i] == -1)
+				if (currentCell == goals[i] && distances[i] == Integer.MAX_VALUE)
 				{
 					distances[i] = hashmap.get(currentCell);
 					found++;

@@ -46,7 +46,7 @@ public class AlphaBetaPlayer extends Player
 	
 	private double maxValue(Game g, double alpha, double beta, int depth)
 	{
-		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber);
+		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber)-depth*0.01;
 		double val = Double.NEGATIVE_INFINITY;
 		Move[] moves = g.getPossibleMoves(playerNumber);
 		
@@ -75,7 +75,7 @@ public class AlphaBetaPlayer extends Player
 	
 	private double minValue(Game g, double alpha, double beta, int depth)
 	{
-		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber);
+		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber)-depth*0.01;
 		double val = Double.POSITIVE_INFINITY;
 		Move[] moves = g.getPossibleMoves(playerNumber%2+1);
 		for (int i = 0; i < moves.length; i++)
