@@ -4,7 +4,7 @@ public class Main
 	public static void main(String[] args) 
 	{
 		AIGame AIG = new AIGame();
-		Player p1 = new AlphaBetaPlayer(1, 4);
+//		Player p1 = new AlphaBetaPlayer(1, 4);
 		Player p2 = new AlphaBetaPlayer(2, 4);
 		int moves = 0;
 		
@@ -32,20 +32,24 @@ public class Main
 //		p2.makeMove(AIG);
 //		p2.makeMove(AIG);
 //		p2.makeMove(AIG);
-//		System.out.println(AIG.getBoard().toString());
+		System.out.println(AIG.getBoard().toString());
 //		System.out.println(AIG.gameValue(2));
 		
-		while(!AIG.gameOver)
-		{
-			p1.makeMove(AIG);
-			moves++;
-			AIG.gameOver = AIG.isGameOver();
-			System.out.println(AIG.getBoard().toString());
-			if (AIG.gameOver) break;
-			p2.makeMove(AIG);
-			AIG.gameOver = AIG.isGameOver();
-			System.out.println(AIG.getBoard().toString());
-		}
-		System.out.println("game over in " + moves + " moves");
+		Player p1 = new ReinforcementLearnerPlayer(1);
+
+		p1.makeMove(AIG);
+		
+//		while(!AIG.gameOver)
+//		{
+//			p1.makeMove(AIG);
+//			moves++;
+//			AIG.gameOver = AIG.isGameOver();
+//			System.out.println(AIG.getBoard().toString());
+//			if (AIG.gameOver) break;
+//			p2.makeMove(AIG);
+//			AIG.gameOver = AIG.isGameOver();
+//			System.out.println(AIG.getBoard().toString());
+//		}
+//		System.out.println("game over in " + moves + " moves");
 	}
 }
