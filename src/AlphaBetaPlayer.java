@@ -38,7 +38,7 @@ public class AlphaBetaPlayer extends Player
 			}
 			g.undoMove();
 		}
-		System.out.println("max: " + max);
+//		System.out.println("max: " + max);
 		lastTwoMoves[1] = lastTwoMoves[0];
 		lastTwoMoves[0] = moves[moveIndex];
 		g.makeMove(moves[moveIndex], playerNumber);

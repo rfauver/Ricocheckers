@@ -9,6 +9,7 @@ public class ReinforcementLearnerPlayer extends Player
 	private int moveCount = 0;
 	private double[] weights;
 	private double epsilon = 0.1;
+	private double alpha = 0.8;
 	
 	public ReinforcementLearnerPlayer(int p)
 	{
@@ -31,50 +32,60 @@ public class ReinforcementLearnerPlayer extends Player
 
 	public void makeMove(Game g)
 	{
-//		Move[] possibleMoves = g.getPossibleMoves(playerNumber);
-//		double value = 0.0;
-//		Move maxMove = null;
-//	
-//		for (Move move : possibleMoves)
-//		{
-//			g.makeMove(move, playerNumber);
-//			double currentValue = 0.0;
-//			calculateFeatures((AIGame) g);
-//			for (each feature)
-//			{
-//				currentValue += feature[i] * weight[i]; 
-//			}
-//			
-//			g.undoMove();
-//			
-//			if (currentValue > value)
-//			{
-//				maxMove = move;
-//			}
-//		}
-//		
-//
-//		for (each feature)
-//		{
-//			weight[i] = weight[i] + alpha*(reward + newWeight[i] - weight[i])*feature[i]; 
-//		}
-//		
-//		g.makeMove(maxMove, playerNumber);
-//		Random rand = new Random();
-//		if (rand.nextFloat() < epsilon)
-//		{
-//			g.undoMove();
-//			g.makeMove(possibleMoves[rand.nextInt(possibleMoves.length)], playerNumber);
-//		}
-//		
-//		if (moveCount%1000 == 0)
-//		{
-//			weights -> file;
-//		}
-		int[] features = calculateFeatures((AIGame) g);
-		for (int f : features)
+		Move[] possibleMoves = g.getPossibleMoves(playerNumber);
+		double value = 0.0;
+		Move maxMove = null;
+		int[] startFeatures = calculateFeatures((AIGame) g);
+		int[] nextFeatures = new int[weights.length];
+	
+		for (Move move : possibleMoves)
 		{
-			System.out.println(f);
+			g.makeMove(move, playerNumber);
+			double currentValue = 0.0;
+			int[] currentFeatures = calculateFeatures((AIGame) g);
+			for (int i = 0; i < currentFeatures.length; i++)
+			{
+				System.out.println(currentValue);
+				currentValue += currentFeatures[i] * weights[i]; 
+			}
+			
+			g.undoMove();
+			
+			if (currentValue > value)
+			{
+				maxMove = move;
+				nextFeatures = currentFeatures;
+			}
+		}
+		
+		// Reward is number of pieces in goal / 3
+		double reward = ((double) nextFeatures[23])/3.0;
+		
+		for (int i = 0; i < startFeatures.length; i++)
+		{
+			weights[i] = weights[i] + alpha*(reward + nextFeatures[i] - startFeatures[i])*startFeatures[i]; 
+		}
+		
+		if (maxMove == null)
+		{
+			System.out.println(moveCount);
+		}
+		g.makeMove(maxMove, playerNumber);
+		Random rand = new Random();
+		if (rand.nextFloat() < epsilon)
+		{
+			g.undoMove();
+			g.makeMove(possibleMoves[rand.nextInt(possibleMoves.length)], playerNumber);
+		}
+		
+		if (moveCount%1000 == 0)
+		{
+			String[] toFile = new String[weights.length];
+			for (int i = 0; i < weights.length; i++)
+			{
+				toFile[i] = "" + weights[i];
+			}
+			FileLoader.writeFile("weights.txt", toFile);
 		}
 	}
 

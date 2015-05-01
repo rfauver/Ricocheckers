@@ -32,25 +32,23 @@ public class Main
 //		p2.makeMove(AIG);
 //		p2.makeMove(AIG);
 //		p2.makeMove(AIG);
-		String[] s = new String[1];
-		s[0] = AIG.getBoard().toString();
+//		String[] s = new String[1];
+//		s[0] = AIG.getBoard().toString();
 //		System.out.println(AIG.gameValue(2));
 		
 		Player p1 = new ReinforcementLearnerPlayer(1);
-
-		p1.makeMove(AIG);
 		
-//		while(!AIG.gameOver)
-//		{
-//			p1.makeMove(AIG);
-//			moves++;
-//			AIG.gameOver = AIG.isGameOver();
+		while(!AIG.gameOver)
+		{
+			p1.makeMove(AIG);
+			moves++;
+			AIG.gameOver = AIG.isGameOver();
 //			System.out.println(AIG.getBoard().toString());
-//			if (AIG.gameOver) break;
-//			p2.makeMove(AIG);
-//			AIG.gameOver = AIG.isGameOver();
+			if (AIG.gameOver) break;
+			p2.makeMove(AIG);
+			AIG.gameOver = AIG.isGameOver();
 //			System.out.println(AIG.getBoard().toString());
-//		}
-//		System.out.println("game over in " + moves + " moves");
+		}
+		System.out.println("game over in " + moves + " moves");
 	}
 }
