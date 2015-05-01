@@ -21,11 +21,32 @@ public class FileLoader
 			}		
 			br.close();
 		}
+		catch (FileNotFoundException e) 
+		{
+			return new String[] {null};
+		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-
 		return inArray;
+	}
+	
+	public static void writeFile(String fileName, String[] output)
+	{
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(fileName, "UTF-8");
+			
+			for (String string : output)
+			{
+				writer.println(string);
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }

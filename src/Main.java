@@ -32,7 +32,8 @@ public class Main
 //		p2.makeMove(AIG);
 //		p2.makeMove(AIG);
 //		p2.makeMove(AIG);
-		System.out.println(AIG.getBoard().toString());
+		String[] s = new String[1];
+		s[0] = AIG.getBoard().toString();
 //		System.out.println(AIG.gameValue(2));
 		
 		Player p1 = new ReinforcementLearnerPlayer(1);

@@ -14,14 +14,21 @@ public class ReinforcementLearnerPlayer extends Player
 	{
 		playerNumber = p;
 		weights = new double[24];
-//		if (weight file empty)
-//		{
-//			weights = new double[24];
-//			generate weights;
-//		}
-//		else weights <- file;
+		weights = importWeights();
+		if (weights[0] == -1)
+		{
+			String[] toFile = new String[weights.length];
+			Random rand = new Random();
+			for (int i = 0; i < weights.length; i++)
+			{
+				weights[i] = rand.nextDouble();
+				toFile[i] = "" + weights[i];
+			}
+			FileLoader.writeFile("weights.txt", toFile);
+		}
+		
 	}
-	
+
 	public void makeMove(Game g)
 	{
 //		Move[] possibleMoves = g.getPossibleMoves(playerNumber);
@@ -170,5 +177,24 @@ public class ReinforcementLearnerPlayer extends Player
 			}
 		}
 		return result;
+	}
+	
+	
+	private double[] importWeights() 
+	{
+		double[] weightDoubles = new double[weights.length];
+		String[] weightStrings = FileLoader.readFile("weights.txt", weights.length);
+		
+		if(weightStrings[0] == null)
+		{
+			weightDoubles[0] = -1;
+			return weightDoubles;
+		}
+		for (int i = 0; i < weights.length; i++)
+		{
+			weightDoubles[i] = Double.parseDouble(weightStrings[i]);
+		}
+		
+		return weightDoubles;
 	}
 }
