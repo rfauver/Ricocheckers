@@ -6,6 +6,8 @@ public interface Game
 	public boolean isGameOver();
 	
 	public double gameValue(int player);
+	
+	public Board getBoard();
 
 	public Move[] getPossibleMoves(int player);
 	

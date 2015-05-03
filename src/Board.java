@@ -147,11 +147,8 @@ public class Board
 				
 				if (cells[i][j].piece == null)
 					outString += "   ";
-				else if (cells[i][j].piece.playerNumber == 1)
-					outString += " 1 ";
-				else if (cells[i][j].piece.playerNumber == 2)
-					outString += " 2 ";
-				else outString += "   ";
+				else 
+					outString += " " + cells[i][j].piece.playerSymbol + " ";
 				
 				if (j != dimensions.z-1)
 				{

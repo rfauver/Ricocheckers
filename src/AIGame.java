@@ -136,19 +136,10 @@ public class AIGame implements Game
 
 		for (int i = 0; i < pieces.length; i++)
 		{
-			BoardCellEdge[] edges = pieces[i].getCurrentCell().getEdges();
-			for (int j = 0; j < edges.length; j++)
+			BoardCell[] destinationCells = getPossibleMovesFromCell(pieces[i].getCurrentCell(), player);
+			for (BoardCell cell : destinationCells)
 			{
-				BoardCell currentCell = edges[j].cell;
-				if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
-				else
-				{
-					while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
-					{
-						currentCell = currentCell.getEdges()[j].adjCell;
-					}
-					moves.add(new Move(currentCell.coords, pieces[i].coordinates, pieces[i]));
-				}
+				moves.add(new Move( cell.coords, pieces[i].getCurrentCell().coords, pieces[i]));
 			}
 		}
 		return moves.toArray(new Move[moves.size()]);
@@ -158,20 +149,30 @@ public class AIGame implements Game
 	{
 		BoardCellEdge[] edges = cell.getEdges();
 		ArrayList<BoardCell> destinationCells = new ArrayList<BoardCell>();
-		for (int j = 0; j < edges.length; j++)
-		{
-			BoardCell currentCell = cell;
-			if (edges[j] instanceof BoardWall || edges[j].adjCell.piece != null) {}
-			else
+		for (int i = 0; i < edges.length; i++)
+		{			
+			BoardCell destCell = cellAtDirection(cell, Direction.toDirection(i));
+			if (destCell != null)
 			{
-				while (currentCell.getEdges()[j] instanceof BoardPassage && currentCell.getEdges()[j].adjCell.piece == null)
-				{
-					currentCell = currentCell.getEdges()[j].adjCell;
-				}
-				destinationCells.add(currentCell);
+				destinationCells.add(destCell);
 			}
 		}
 		return destinationCells.toArray(new BoardCell[destinationCells.size()]);
+	}
+	
+	private BoardCell cellAtDirection(BoardCell fromCell, Direction dir)
+	{
+		BoardCell destCell = null;
+		BoardCell currentCell = fromCell;
+		if (fromCell.getEdge(dir) instanceof BoardPassage && fromCell.getEdge(dir).adjCell.piece == null)
+		{
+			while (currentCell.getEdge(dir) instanceof BoardPassage && currentCell.getEdge(dir).adjCell.piece == null)
+			{
+				currentCell = currentCell.getEdge(dir).adjCell;
+			}
+			destCell = currentCell;
+		}
+		return destCell;
 	}
 
 	public void makeMove(Move move, int player) 
@@ -183,6 +184,18 @@ public class AIGame implements Game
 		move.piece.coordinates = move.destination;
 
 		moveStack.push(move);
+	}
+	
+	public boolean makeMove(GamePiece piece, Direction dir)
+	{
+		BoardCell destination = cellAtDirection(piece.getCurrentCell(), dir);
+		if (destination != null)
+		{
+			Move move = new Move(destination.coords, piece.getCurrentCell().coords, piece);
+			makeMove(move, piece.playerNumber);
+			return true;
+		}
+		else return false;
 	}
 
 	public void undoMove() 

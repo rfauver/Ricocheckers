@@ -3,6 +3,7 @@ public class GamePiece
 {
 	public IntVector2 coordinates;
 	public int playerNumber;
+	public String playerSymbol;
 	public int index;
 	
 	private BoardCell currentCell;
@@ -12,6 +13,7 @@ public class GamePiece
 	{
 		this.coordinates = coordinates;
 		this.playerNumber = playerNumber;
+		playerSymbol = Integer.toString(playerNumber);
 		this.index = index;
 		
 		currentCell = b.getCell(coordinates);

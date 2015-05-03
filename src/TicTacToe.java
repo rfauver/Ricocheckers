@@ -126,6 +126,13 @@ public class TicTacToe implements Game {
 		board[m.destination.x][m.destination.z] = 0;
 	}
 	
+	public Board getBoard()
+	{
+		try { throw new Exception("Don't call this method"); } 
+		catch (Exception e) { e.printStackTrace(); }
+		return null;
+	}
+	
 	public void emptyBoard()
 	{
 		for (int i = 0; i < board.length; i++)
