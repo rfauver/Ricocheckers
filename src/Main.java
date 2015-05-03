@@ -3,52 +3,44 @@ public class Main
 {
 	public static void main(String[] args) 
 	{
-		AIGame AIG = new AIGame();
-//		Player p1 = new AlphaBetaPlayer(1, 4);
-		Player p2 = new AlphaBetaPlayer(2, 4);
+
+		Player p1 = new AlphaBetaPlayer(1, 0);
+		ReinforcementLearnerPlayer p2 = new ReinforcementLearnerPlayer(2);
 		int moves = 0;
+		int p1Wins = 0;
+		int p2Wins = 0;
+		int p1WinMoves = 0;
+		int p2WinMoves = 0;
 		
-//		GamePiece testPiece = AIG.getBoard().getPlayerPieces(1)[0];
-//		System.out.println(testPiece.coordinates.x + "  " + testPiece.coordinates.z);
-//		
-//		BoardCell[] testGoal = new BoardCell[1];
-//		testGoal[0] = AIG.getBoard().getCell(new IntVector2(8,9));
-//		System.out.println(AIG.BFS(testPiece, testGoal)[0]);
-		
-//		GamePiece[] pieces = AIG.getBoard().getPieces();
-//		for (int i = 0; i < pieces.length; i++)
-//		{
-//			if (pieces[i].playerNumber == 1)
-//			{
-//				Move temp = new Move(new IntVector2(i, i), pieces[i].coordinates, pieces[i]);
-//				AIG.makeMove(temp, 1);
-//			}
-//			else 
-//			{
-//				Move temp = new Move(new IntVector2(0, i+1), pieces[i].coordinates, pieces[i]);
-//				AIG.makeMove(temp, 2);
-//			}
-//		}
-//		p2.makeMove(AIG);
-//		p2.makeMove(AIG);
-//		p2.makeMove(AIG);
-//		String[] s = new String[1];
-//		s[0] = AIG.getBoard().toString();
-//		System.out.println(AIG.gameValue(2));
-		
-		Player p1 = new ReinforcementLearnerPlayer(1);
-		
-		while(!AIG.gameOver)
+		for (int i = 0; i < 100000; i++)
 		{
-			p1.makeMove(AIG);
-			moves++;
-			AIG.gameOver = AIG.isGameOver();
-//			System.out.println(AIG.getBoard().toString());
-			if (AIG.gameOver) break;
-			p2.makeMove(AIG);
-			AIG.gameOver = AIG.isGameOver();
-//			System.out.println(AIG.getBoard().toString());
+			AIGame AIG = new AIGame();
+			moves = 0;
+			while(!AIG.gameOver)
+			{
+				p1.makeMove(AIG);
+				moves++;
+				AIG.gameOver = AIG.isGameOver();
+//				System.out.println(AIG.getBoard().toString());
+				if (AIG.gameOver) break;
+				p2.makeMove(AIG);
+				AIG.gameOver = AIG.isGameOver();
+//				System.out.println(AIG.getBoard().toString());
+			}
+			if (AIG.winner == 1)
+			{
+				p1Wins++;
+				p1WinMoves += moves;
+			}
+			else
+			{
+				p2Wins++;
+				p2WinMoves += moves;
+			}
+//			System.out.println("Player " + AIG.winner + " won in " + moves + " moves");
 		}
-		System.out.println("game over in " + moves + " moves");
+		p2.exportWeights();
+		System.out.println("Player 1 won " + p1Wins + " times with an average of " + ((double)p1WinMoves/(double)p1Wins) + " moves per win");
+		System.out.println("Player 2 won " + p2Wins + " times with an average of " + ((double)p2WinMoves/(double)p2Wins) + " moves per win");
 	}
 }
