@@ -9,13 +9,13 @@ public class ReinforcementLearnerPlayer extends Player
 	private int moveCount = 0;
 	private double[] weights;
 	private double epsilon = 0.1;
-	private double alpha = 0.5;
+	private double alpha = 0.9;
 	private Move[] lastTwoMoves = new Move[2];
 	
 	public ReinforcementLearnerPlayer(int p)
 	{
 		playerNumber = p;
-		weights = new double[24];
+		weights = new double[42];
 		weights = importWeights();
 		if (weights[0] == -1)
 		{
@@ -58,13 +58,18 @@ public class ReinforcementLearnerPlayer extends Player
 		}
 		
 		// Reward is number of pieces in goal / 3
-		double reward = nextFeatures[23];
-		
-		double gap;
+		double reward = nextFeatures[41];
+		double maxWeight = 0;
 		for (int i = 0; i < startFeatures.length; i++)
 		{
-			gap = 1.0 - weights[i];
-			weights[i] = Math.max(0, weights[i] + alpha*(reward + nextFeatures[i] - startFeatures[i])*nextFeatures[i]);
+			weights[i] = Math.max(0, weights[i] + alpha*(reward + nextFeatures[i]*weights[i] - startFeatures[i]*weights[i])*nextFeatures[i]);
+			if (weights[i] > maxWeight)
+				maxWeight = weights[i];
+		}
+		
+		for (int i = 0; i < startFeatures.length; i++)
+		{
+			weights[i] = weights[i]/maxWeight;
 		}
 		
 		Random rand = new Random();
@@ -80,7 +85,7 @@ public class ReinforcementLearnerPlayer extends Player
 		lastTwoMoves[1] = lastTwoMoves[0];
 		lastTwoMoves[0] = maxMove;
 		
-		if (moveCount%10000 == 0)
+		if (moveCount%1000000 == 0)
 		{
 			exportWeights();
 		}
@@ -91,65 +96,81 @@ public class ReinforcementLearnerPlayer extends Player
 		GamePiece[] myPieces = g.getBoard().getPlayerPieces(playerNumber);
 		
 		double[] result = new double[weights.length];
-		double[] cols = new double[11];
-		double[] rows = new double[11];
+		double[] cols = new double[20];
+		double[] rows = new double[20];
 		double half, goals;
 		
-		cols = calculateCols(myPieces);
-		rows = calculateRows(myPieces);
+		cols = calculateCols(g, myPieces);
+		rows = calculateRows(g, myPieces);
 		half = calculateHalf(myPieces);
-		goals = calculateGoals(myPieces, g);
+		goals = calculateGoals(g, myPieces);
 		
-		for (int i = 0; i < 11; i++)
+		for (int i = 0; i < cols.length; i++)
 		{
 			result[i] = cols[i];
-			result[i+11] = rows[i];
+			result[i+cols.length] = rows[i];
 		}
-		result[22] = half;
-		result[23] = goals;
+		result[40] = half;
+		result[41] = goals;
 		
 		return result;
 	}
 	
-	private double[] calculateCols(GamePiece[] pieces)
+	private double[] calculateCols(AIGame g, GamePiece[] pieces)
 	{
-		double[] result = new double[11];
+		double[] result = new double[20];
 		Arrays.fill(result, 0);
+		int index = 0;
+		BoardCell currentCell = g.getBoard().getCell(new IntVector2(0,0));
 		for (int i = 0; i < 11; i++)
 		{
-			double distance = Math.abs(5-i)-1;
-			if (distance <= 0)
+			currentCell = g.getBoard().getCell(new IntVector2(0, i));
+			while(currentCell != null)
 			{
-				distance = 1;
-			}
-			for (GamePiece piece : pieces)
-			{
-				if (piece.coordinates.z == i)
+				if (currentCell.coords.x == 5 && currentCell.coords.z == 5)
 				{
-					result[i] += (1.0/3.0)/distance;
+					currentCell = currentCell.adjacent(Direction.SOUTH);
 				}
+				if (currentCell.piece != null && currentCell.piece.playerNumber == playerNumber)
+				{
+					result[index] += (1.0/3.0);
+				}
+
+				if (currentCell.getEdge(Direction.SOUTH) instanceof BoardWall)
+				{
+					index++;
+				}
+				currentCell = currentCell.adjacent(Direction.SOUTH);
 			}
 		}
 		return result;
 	}
 	
-	private double[] calculateRows(GamePiece[] pieces)
+	private double[] calculateRows(AIGame g, GamePiece[] pieces)
 	{
-		double[] result = new double[11];
+		double[] result = new double[20];
 		Arrays.fill(result, 0);
+		int index = 0;
+		BoardCell currentCell = g.getBoard().getCell(new IntVector2(0,0));
 		for (int i = 0; i < 11; i++)
 		{
-			double distance = Math.abs(5-i)-1;
-			if (distance <= 0)
+			currentCell = g.getBoard().getCell(new IntVector2(i, 0));
+			while(currentCell != null)
 			{
-				distance = 1;
-			}
-			for (GamePiece piece : pieces)
-			{
-				if (piece.coordinates.x == i)
+				if (currentCell.coords.x == 5 && currentCell.coords.z == 5)
 				{
-					result[i] += (1.0/3.0)/distance;
+					currentCell = currentCell.adjacent(Direction.EAST);
 				}
+				if (currentCell.piece != null && currentCell.piece.playerNumber == playerNumber)
+				{
+					result[index] += (1.0/3.0);
+				}
+
+				if (currentCell.getEdge(Direction.EAST) instanceof BoardWall)
+				{
+					index++;
+				}
+				currentCell = currentCell.adjacent(Direction.EAST);
 			}
 		}
 		return result;
@@ -174,7 +195,7 @@ public class ReinforcementLearnerPlayer extends Player
 		{
 			for (GamePiece piece : pieces)
 			{
-				if (piece.coordinates.x == i)
+				if (piece.coordinates.x == i || (piece.coordinates.x == 5 && piece.coordinates.z == i))
 				{
 					result += 1;
 				}
@@ -183,7 +204,7 @@ public class ReinforcementLearnerPlayer extends Player
 		return result;
 	}
 	
-	private double calculateGoals(GamePiece[] pieces, AIGame g)
+	private double calculateGoals(AIGame g, GamePiece[] pieces)
 	{
 		double result = 0;
 		for (GamePiece piece : pieces)
