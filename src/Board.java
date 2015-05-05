@@ -32,6 +32,7 @@ public class Board
 			}
 		}
 		
+		// create walls based on walls.txt
 		String[] walls = FileLoader.readFile("walls.txt", dimensions.x * dimensions.z);
 		for (int i = 0; i < dimensions.x; i++)
 		{
@@ -44,6 +45,7 @@ public class Board
 	
 	private void createPieces()
 	{
+		// read initial piece positions from pieces.txt
 		String[] piecesString = FileLoader.readFile("pieces.txt", pieceCount);
 		int tempX = 0, tempZ = 0, tempPlayer = 1, paramIndex = 0;
 		

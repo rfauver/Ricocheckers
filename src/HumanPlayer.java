@@ -26,6 +26,7 @@ public class HumanPlayer extends Player
 		while (!moveMade)
 		{
 			activePiece.playerSymbol = "X";
+			System.out.println((100 - ((AIGame)g).turnsRemaining()) + " turns remaining");
 			System.out.println(g.getBoard().toString());
 			activePiece.playerSymbol = Integer.toString(activePiece.playerNumber);
 			String response = JOptionPane.showInputDialog("Please press enter to switch pieces or NORTH, SOUTH, EAST, or WEST to move the active piece in that direction");

@@ -8,8 +8,8 @@ public class ReinforcementLearnerPlayer extends Player
 	
 	private int moveCount = 0;
 	private double[] weights;
-	private double epsilon = 0.1;
-	private double alpha = 0.9;
+	private double epsilon = 0.0;
+	private double alpha = 0.05;
 	private Move[] lastTwoMoves = new Move[2];
 	
 	public ReinforcementLearnerPlayer(int p)
@@ -19,11 +19,8 @@ public class ReinforcementLearnerPlayer extends Player
 		weights = importWeights();
 		if (weights[0] == -1)
 		{
-			Random rand = new Random();
-			for (int i = 0; i < weights.length; i++)
-			{
-				weights[i] = rand.nextDouble();
-			}
+			// start weights initialized to 0 if file is empty
+			Arrays.fill(weights, 0);
 			exportWeights();
 		}
 		
@@ -38,6 +35,7 @@ public class ReinforcementLearnerPlayer extends Player
 		double[] startFeatures = calculateFeatures((AIGame) g);
 		double[] nextFeatures = new double[weights.length];
 	
+		// determine the maximum value move
 		for (Move move : possibleMoves)
 		{
 			g.makeMove(move, playerNumber);
@@ -57,21 +55,7 @@ public class ReinforcementLearnerPlayer extends Player
 			}
 		}
 		
-		// Reward is number of pieces in goal / 3
-		double reward = nextFeatures[41];
-		double maxWeight = 0;
-		for (int i = 0; i < startFeatures.length; i++)
-		{
-			weights[i] = Math.max(0, weights[i] + alpha*(reward + nextFeatures[i]*weights[i] - startFeatures[i]*weights[i])*nextFeatures[i]);
-			if (weights[i] > maxWeight)
-				maxWeight = weights[i];
-		}
-		
-		for (int i = 0; i < startFeatures.length; i++)
-		{
-			weights[i] = weights[i]/maxWeight;
-		}
-		
+		// make a random move epsilon percent of the time or if there is no most valuable move
 		Random rand = new Random();
 		if (rand.nextFloat() >= epsilon && maxMove != null)
 		{
@@ -79,12 +63,38 @@ public class ReinforcementLearnerPlayer extends Player
 		}
 		else
 		{
+			// if there is no most valuable move, update weights based on random move
 			g.makeMove(possibleMoves[rand.nextInt(possibleMoves.length)], playerNumber);
+			if (maxMove == null)
+			{
+				nextFeatures = calculateFeatures((AIGame) g);
+			}
+		}
+		
+		// Reward is number of pieces in goal / 3
+		double reward = nextFeatures[41];
+		double maxWeight = 0;
+		for (int i = 0; i < startFeatures.length; i++)
+		{
+			// updating weights
+			weights[i] = Math.max(0, weights[i] + alpha*(reward + nextFeatures[i]*weights[i] - startFeatures[i]*weights[i])*nextFeatures[i]);
+			if (weights[i] > maxWeight)
+				maxWeight = weights[i];
+		}
+		
+		// scaling by maximum weight to keep weights between 0 and 1
+		if (maxWeight > 0.0)
+		{
+			for (int i = 0; i < startFeatures.length; i++)
+			{
+				weights[i] = weights[i]/maxWeight;
+			}
 		}
 		
 		lastTwoMoves[1] = lastTwoMoves[0];
 		lastTwoMoves[0] = maxMove;
 		
+		// export weights every million moves
 		if (moveCount%1000000 == 0)
 		{
 			exportWeights();
@@ -112,7 +122,7 @@ public class ReinforcementLearnerPlayer extends Player
 		}
 		result[40] = half;
 		result[41] = goals;
-		
+
 		return result;
 	}
 	
@@ -197,7 +207,7 @@ public class ReinforcementLearnerPlayer extends Player
 			{
 				if (piece.coordinates.x == i || (piece.coordinates.x == 5 && piece.coordinates.z == i))
 				{
-					result += 1;
+					result += 1.0/3.0;
 				}
 			}
 		}
@@ -212,7 +222,9 @@ public class ReinforcementLearnerPlayer extends Player
 			for (BoardCell cell : g.getBoard().getPlayerStartingCells(playerNumber%2 + 1))
 			{
 				if (piece.coordinates.x == cell.coords.x && piece.coordinates.z == cell.coords.z)
-					result += 1;
+				{
+					result += 1.0/3.0;
+				}
 			}
 		}
 		return result;

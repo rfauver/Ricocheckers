@@ -2,7 +2,7 @@ import java.io.*;
 
 public class FileLoader 
 {
-	 	
+	// read a file given a filename and a size of the expected input in lines
 	public static String[] readFile(String fileName, int size)
 	{
 		String[] inArray = new String[size];
@@ -32,6 +32,7 @@ public class FileLoader
 		return inArray;
 	}
 	
+	// write a file given a filename and an array of lines to be written
 	public static void writeFile(String fileName, String[] output)
 	{
 		PrintWriter writer;

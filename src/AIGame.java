@@ -6,7 +6,7 @@ public class AIGame implements Game
 	public int winner; //0 for no winner, 1 for player 1, 2 for player 2
 
 	private Board board;
-	private Stack<Move> moveStack;
+	private Stack<Move> moveStack; 
 
 	public AIGame()
 	{
@@ -18,11 +18,18 @@ public class AIGame implements Game
 
 	public boolean isGameOver() 
 	{
+		// see if move limit has been reached
+		if (moveStack.size() > 200)
+		{
+			gameOver = true;
+			return true;
+		}
 		GamePiece[] player1Pieces = board.getPlayerPieces(1);
 		GamePiece[] player2Pieces = board.getPlayerPieces(2);
 
 		for (int i = 0; i < player1Pieces.length; i++)
 		{
+			// check if player 1 has not won yet
 			if (player1Pieces[i].coordinates != player2Pieces[0].getStartingCell().coords
 			 && player1Pieces[i].coordinates != player2Pieces[1].getStartingCell().coords
 			 && player1Pieces[i].coordinates != player2Pieces[2].getStartingCell().coords)
@@ -38,6 +45,7 @@ public class AIGame implements Game
 		}
 		for (int i = 0; i < player2Pieces.length; i++)
 		{
+			// check if player 2 has not won yet
 			if (player2Pieces[i].coordinates != player1Pieces[0].getStartingCell().coords
 			 && player2Pieces[i].coordinates != player1Pieces[1].getStartingCell().coords
 			 && player2Pieces[i].coordinates != player1Pieces[2].getStartingCell().coords)
@@ -52,13 +60,14 @@ public class AIGame implements Game
 
 	public double gameValue(int player) 
 	{
-		if (!gameOver || winner == 0) 
+		if (!gameOver) 
 		{
 			GamePiece[] pieces = board.getPlayerPieces(player);
 			BoardCell[] goals = board.getPlayerStartingCells((player%2)+1);
 			ArrayList<GamePiece> unfinishedPieces = new ArrayList<GamePiece>();
 			ArrayList<BoardCell> unfilledGoals = new ArrayList<BoardCell>();
 			
+			// find pieces that are not already in goal
 			for (int i = 0; i < pieces.length; i++)
 			{
 				boolean isGoal = false;
@@ -72,6 +81,7 @@ public class AIGame implements Game
 				if (!isGoal) unfinishedPieces.add(pieces[i]);
 			}
 			
+			// find goals that are empty
 			for (int i = 0; i < goals.length; i++)
 			{
 				if (goals[i].piece == null)// || goals[i].piece.playerNumber == (player%2)+1)
@@ -84,11 +94,14 @@ public class AIGame implements Game
 			goals = unfilledGoals.toArray(new BoardCell[unfilledGoals.size()]);
 			int[][] distanceToGoals = new int[pieces.length][goals.length];
 			double value = 0;
+			
+			//calculate shortest paths from each piece to each goal
 			for (int i = 0; i < pieces.length; i++)
 			{	
 				distanceToGoals[i] = BFS(pieces[i], goals);
 			}
 			
+			// greedily match each piece to a goal
 			for (int i = 0; i < goals.length; i++)
 			{
 				int minMoveIndex = -1;
@@ -110,8 +123,8 @@ public class AIGame implements Game
 				{
 					if (distanceToGoals[minPieceIndex][minMoveIndex] >= 0)
 					{
+						// create value by average distance of each piece to goal
 						value += (1.0/((double)distanceToGoals[minPieceIndex][minMoveIndex]+1))/(double)pieces.length;
-//						value += (double)(20 - distanceToGoals[minPieceIndex][minMoveIndex])/(double)pieces.length;
 					}
 					for (int j = 0; j < distanceToGoals.length; j++)
 					{
@@ -125,10 +138,12 @@ public class AIGame implements Game
 			}
 			return value;
 		}
-		if (winner == player) return 1.0;
-		else return -1.0;
+		else if (winner == 0) return -1.0;		// value is -1 for both players in a draw
+		else if (winner == player) return 1.0;	// value is 1 for winning player
+		else return -1.0;						// value is -1 for losing player
 	}
 
+	// all the possible moves for a player's pieces
 	public Move[] getPossibleMoves(int player) 
 	{
 		GamePiece[] pieces = board.getPlayerPieces(player);
@@ -145,6 +160,7 @@ public class AIGame implements Game
 		return moves.toArray(new Move[moves.size()]);
 	}
 	
+	// all of the possible moves from a given cell for a player
 	private BoardCell[] getPossibleMovesFromCell(BoardCell cell, int playerNumber)
 	{
 		BoardCellEdge[] edges = cell.getEdges();
@@ -160,6 +176,7 @@ public class AIGame implements Game
 		return destinationCells.toArray(new BoardCell[destinationCells.size()]);
 	}
 	
+	// the move from a certain cell in a given direction
 	private BoardCell cellAtDirection(BoardCell fromCell, Direction dir)
 	{
 		BoardCell destCell = null;
@@ -174,6 +191,11 @@ public class AIGame implements Game
 		}
 		return destCell;
 	}
+	
+	public int turnsRemaining()
+	{
+		return moveStack.size()/2;
+	}
 
 	public void makeMove(Move move, int player) 
 	{
@@ -186,6 +208,7 @@ public class AIGame implements Game
 		moveStack.push(move);
 	}
 	
+	// make move given a piece and a direction
 	public boolean makeMove(GamePiece piece, Direction dir)
 	{
 		BoardCell destination = cellAtDirection(piece.getCurrentCell(), dir);
@@ -221,6 +244,7 @@ public class AIGame implements Game
 		return board;
 	}
 	
+	// Breadth First Search to calculate value of game
 	private int[] BFS(GamePiece piece, BoardCell[] goals)
 	{
 		BoardCell startingCell = board.getCell(piece.coordinates);
@@ -259,11 +283,9 @@ public class AIGame implements Game
 				{								
 					q.add(movableCells[i]);
 					hashmap.put(movableCells[i], hashmap.get(currentCell)+1);
-//					System.out.println("cell: " + movableCells[i].coords + "\tdist: " + (hashmap.get(currentCell)+1));
 				}
 			}
 		}
-//		Arrays.fill(distances, -2);
 		startingCell.piece = piece;
 		return distances;
 	}

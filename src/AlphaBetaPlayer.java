@@ -21,6 +21,7 @@ public class AlphaBetaPlayer extends Player
 		for (int i = 0; i < moves.length; i++)
 		{
 			if (moves[i] == null) break;
+			// prevent player from going back to where they just were
 			if (lastTwoMoves[1] != null && moves[i].destination == lastTwoMoves[1].destination)
 			{
 				if (i < moves.length-1)
@@ -30,7 +31,6 @@ public class AlphaBetaPlayer extends Player
 			}
 			g.makeMove(moves[i], playerNumber);
 			double curMin = minValue(g, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-//			System.out.println("curMin: " + curMin + "\t\tmove: " + moves[i].destination.x + " " + moves[i].destination.z);
 			if (curMin > max)
 			{
 				max = curMin;
@@ -38,7 +38,6 @@ public class AlphaBetaPlayer extends Player
 			}
 			g.undoMove();
 		}
-//		System.out.println("max: " + max);
 		lastTwoMoves[1] = lastTwoMoves[0];
 		lastTwoMoves[0] = moves[moveIndex];
 		g.makeMove(moves[moveIndex], playerNumber);
@@ -46,7 +45,7 @@ public class AlphaBetaPlayer extends Player
 	
 	private double maxValue(Game g, double alpha, double beta, int depth)
 	{
-		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber)-depth*0.01;
+		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber)-depth*0.01; // need to scale by depth so closer moves are valued higher
 		double val = Double.NEGATIVE_INFINITY;
 		Move[] moves = g.getPossibleMoves(playerNumber);
 		
@@ -55,7 +54,6 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber);
 			double curVal = Math.max(val, minValue(g, alpha, beta, depth+1));
-//			System.out.println("max  " + curVal + "\tdepth  " + (depth+1));
 			g.undoMove();
 			if (curVal > val)
 			{
@@ -75,7 +73,7 @@ public class AlphaBetaPlayer extends Player
 	
 	private double minValue(Game g, double alpha, double beta, int depth)
 	{
-		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber)-depth*0.01;
+		if (g.isGameOver() || depth >= maxDepth) return g.gameValue(playerNumber)-depth*0.01; // need to scale by depth so closer moves are valued higher
 		double val = Double.POSITIVE_INFINITY;
 		Move[] moves = g.getPossibleMoves(playerNumber%2+1);
 		for (int i = 0; i < moves.length; i++)
@@ -83,7 +81,6 @@ public class AlphaBetaPlayer extends Player
 			if (moves[i] == null) break;
 			g.makeMove(moves[i], playerNumber%2+1);
 			double curVal = Math.min(val, maxValue(g, alpha, beta, depth+1));
-//			System.out.println("min  " + curVal);
 			g.undoMove();
 			if (curVal < val)
 			{

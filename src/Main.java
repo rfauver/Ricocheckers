@@ -4,15 +4,18 @@ public class Main
 	public static void main(String[] args) 
 	{
 
-		ReinforcementLearnerPlayer p1 = new ReinforcementLearnerPlayer(1);
+		// Change to HumanPlayer to play game
+		Player p1 = new AlphaBetaPlayer(1, 4);
 		ReinforcementLearnerPlayer p2 = new ReinforcementLearnerPlayer(2);
 		int moves = 0;
 		int p1Wins = 0;
 		int p2Wins = 0;
+		int draws = 0;
 		int p1WinMoves = 0;
 		int p2WinMoves = 0;
-		
-		for (int i = 0; i < 50; i++)
+			
+		// control number of games played
+		for (int i = 0; i < 100; i++)
 		{
 			AIGame AIG = new AIGame();
 			moves = 0;
@@ -32,16 +35,18 @@ public class Main
 				p1Wins++;
 				p1WinMoves += moves;
 			}
-			else
+			else if (AIG.winner == 2)
 			{
 				p2Wins++;
 				p2WinMoves += moves;
 			}
-//			System.out.println("Player " + AIG.winner + " won in " + moves + " moves");
+			else
+			{
+				draws++;
+			}
 		}
-		p1.exportWeights();
-		p2.exportWeights();
 		System.out.println("Player 1 won " + p1Wins + " times with an average of " + ((double)p1WinMoves/(double)p1Wins) + " moves per win");
 		System.out.println("Player 2 won " + p2Wins + " times with an average of " + ((double)p2WinMoves/(double)p2Wins) + " moves per win");
+		System.out.println("There were " + draws + " draws");
 	}
 }

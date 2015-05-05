@@ -1,6 +1,8 @@
 
 public interface Game 
 {	
+	// interface for a game
+	
 	public boolean gameOver = false;
 
 	public boolean isGameOver();
