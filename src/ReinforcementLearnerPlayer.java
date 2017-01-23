@@ -32,7 +32,7 @@ public class ReinforcementLearnerPlayer extends Player
 		Move[] possibleMoves = g.getPossibleMoves(playerNumber);
 		double value = 0.0;
 		Move maxMove = null;
-		double[] startFeatures = calculateFeatures((AIGame) g);
+		double[] startFeatures = calculateFeatures((Ricocheckers) g);
 		double[] nextFeatures = new double[weights.length];
 	
 		// determine the maximum value move
@@ -40,7 +40,7 @@ public class ReinforcementLearnerPlayer extends Player
 		{
 			g.makeMove(move, playerNumber);
 			double currentValue = 0.0;
-			double[] currentFeatures = calculateFeatures((AIGame) g);
+			double[] currentFeatures = calculateFeatures((Ricocheckers) g);
 			for (int i = 0; i < currentFeatures.length; i++)
 			{
 				currentValue += currentFeatures[i] * weights[i]; 
@@ -67,7 +67,7 @@ public class ReinforcementLearnerPlayer extends Player
 			g.makeMove(possibleMoves[rand.nextInt(possibleMoves.length)], playerNumber);
 			if (maxMove == null)
 			{
-				nextFeatures = calculateFeatures((AIGame) g);
+				nextFeatures = calculateFeatures((Ricocheckers) g);
 			}
 		}
 		
@@ -101,7 +101,7 @@ public class ReinforcementLearnerPlayer extends Player
 		}
 	}
 
-	private double[] calculateFeatures(AIGame g) 
+	private double[] calculateFeatures(Ricocheckers g)
 	{
 		GamePiece[] myPieces = g.getBoard().getPlayerPieces(playerNumber);
 		
@@ -126,7 +126,7 @@ public class ReinforcementLearnerPlayer extends Player
 		return result;
 	}
 	
-	private double[] calculateCols(AIGame g, GamePiece[] pieces)
+	private double[] calculateCols(Ricocheckers g, GamePiece[] pieces)
 	{
 		double[] result = new double[20];
 		Arrays.fill(result, 0);
@@ -156,7 +156,7 @@ public class ReinforcementLearnerPlayer extends Player
 		return result;
 	}
 	
-	private double[] calculateRows(AIGame g, GamePiece[] pieces)
+	private double[] calculateRows(Ricocheckers g, GamePiece[] pieces)
 	{
 		double[] result = new double[20];
 		Arrays.fill(result, 0);
@@ -214,7 +214,7 @@ public class ReinforcementLearnerPlayer extends Player
 		return result;
 	}
 	
-	private double calculateGoals(AIGame g, GamePiece[] pieces)
+	private double calculateGoals(Ricocheckers g, GamePiece[] pieces)
 	{
 		double result = 0;
 		for (GamePiece piece : pieces)

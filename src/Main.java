@@ -17,25 +17,25 @@ public class Main
 		// control number of games played
 		for (int i = 0; i < 100; i++)
 		{
-			AIGame AIG = new AIGame();
+			Ricocheckers g = new Ricocheckers();
 			moves = 0;
-			while(!AIG.gameOver)
+			while(!g.gameOver)
 			{
-				p1.makeMove(AIG);
+				p1.makeMove(g);
 				moves++;
-				AIG.gameOver = AIG.isGameOver();
-//				System.out.println(AIG.getBoard().toString());
-				if (AIG.gameOver) break;
-				p2.makeMove(AIG);
-				AIG.gameOver = AIG.isGameOver();
-//				System.out.println(AIG.getBoard().toString());
+				g.gameOver = g.isGameOver();
+				System.out.println(g.getBoard().toString());
+				if (g.gameOver) break;
+				p2.makeMove(g);
+				g.gameOver = g.isGameOver();
+				System.out.println(g.getBoard().toString());
 			}
-			if (AIG.winner == 1)
+			if (g.winner == 1)
 			{
 				p1Wins++;
 				p1WinMoves += moves;
 			}
-			else if (AIG.winner == 2)
+			else if (g.winner == 2)
 			{
 				p2Wins++;
 				p2WinMoves += moves;

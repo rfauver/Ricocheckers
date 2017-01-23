@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class AIGame implements Game 
+public class Ricocheckers implements Game
 {
 	public boolean gameOver;
 	public int winner; //0 for no winner, 1 for player 1, 2 for player 2
@@ -8,7 +8,7 @@ public class AIGame implements Game
 	private Board board;
 	private Stack<Move> moveStack; 
 
-	public AIGame()
+	public Ricocheckers()
 	{
 		gameOver = false;
 		winner = 0;
